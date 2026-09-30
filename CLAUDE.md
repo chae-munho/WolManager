@@ -82,6 +82,7 @@
 ### 서브넷 감지
 - 상태가 Up이고 Loopback/Tunnel이 아닌 NIC의 IPv4 주소만 사용
 - `169.254.x.x`(APIPA)와 /32 주소는 제외
+- 이름이나 설명에 VMware, VirtualBox, Hyper-V, vEthernet이 들어간 가상 어댑터는 스캔과 깨우기 대상에서 제외
 - 기본 선택 대역: 등록된 PC가 속한 대역 → 게이트웨이가 있는 대역 → 첫 번째 대역 순
 
 ### 스캔

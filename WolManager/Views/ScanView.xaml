@@ -1,0 +1,55 @@
+<UserControl x:Class="WolManager.Views.ScanView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Border Style="{StaticResource CardStyle}">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="300" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <TextBlock Grid.Column="0"
+                       Margin="0,0,10,0"
+                       VerticalAlignment="Center"
+                       Style="{StaticResource SectionTitleTextStyle}"
+                       Text="네트워크" />
+
+            <ComboBox Grid.Column="1"
+                      ItemsSource="{Binding Subnets}"
+                      SelectedItem="{Binding SelectedSubnet}"
+                      DisplayMemberPath="DisplayName"
+                      IsEnabled="{Binding IsIdle}" />
+
+            <Button Grid.Column="2"
+                    Margin="8,0,0,0"
+                    Content="네트워크 스캔"
+                    Command="{Binding ScanCommand}" />
+
+            <!-- 스캔 중 진행률 -->
+            <StackPanel Grid.Column="3"
+                        Margin="16,0,0,0"
+                        VerticalAlignment="Center"
+                        Visibility="{Binding IsScanning, Converter={StaticResource BoolToVisibility}}">
+                <ProgressBar Maximum="{Binding ProgressTotal, Mode=OneWay}" Value="{Binding ProgressDone, Mode=OneWay}" />
+                <TextBlock Margin="0,4,0,0" Style="{StaticResource HintTextStyle}">
+                    <Run Text="{Binding ProgressDone, Mode=OneWay}" />
+                    <Run Text="/" />
+                    <Run Text="{Binding ProgressTotal, Mode=OneWay}" />
+                </TextBlock>
+            </StackPanel>
+
+            <TextBlock Grid.Row="1"
+                       Grid.ColumnSpan="4"
+                       Margin="0,10,0,0"
+                       Style="{StaticResource HintTextStyle}"
+                       Text="{Binding Message}"
+                       TextWrapping="Wrap" />
+        </Grid>
+    </Border>
+</UserControl>

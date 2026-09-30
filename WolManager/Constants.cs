@@ -34,4 +34,22 @@ public static class Constants
 
     /// <summary>깨우기 요청 후 "깨우는 중"으로 유지하는 시간</summary>
     public static readonly TimeSpan WakingDuration = TimeSpan.FromMinutes(3);
+
+    /// <summary>ARP 스캔 동시 요청 수</summary>
+    public const int ArpMaxConcurrency = 64;
+
+    /// <summary>ARP 요청 하나의 타임아웃 (SendARP 자체 재시도 시간보다 길게)</summary>
+    public static readonly TimeSpan ArpTimeout = TimeSpan.FromSeconds(5);
+
+    /// <summary>역방향 DNS 조회 타임아웃</summary>
+    public static readonly TimeSpan ReverseDnsTimeout = TimeSpan.FromSeconds(1.5);
+
+    /// <summary>이보다 넓은 마스크(작은 접두사)는 마스터 PC IP의 /24만 스캔한다</summary>
+    public const int ScanMinPrefixLength = 22;
+
+    /// <summary>넓은 대역을 줄여서 스캔할 때 쓰는 접두사 길이</summary>
+    public const int ScanFallbackPrefixLength = 24;
+
+    /// <summary>스캔과 깨우기에서 제외하는 가상 어댑터 이름/설명 키워드</summary>
+    public static readonly string[] VirtualAdapterKeywords = ["VMware", "VirtualBox", "Hyper-V", "vEthernet"];
 }

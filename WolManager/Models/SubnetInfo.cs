@@ -20,6 +20,9 @@ public sealed record SubnetInfo(string InterfaceName, IPAddress LocalAddress, in
     /// <summary>대역 표시용 문자열 (예: 192.168.0.0/24)</summary>
     public string Network => $"{FromUInt32(ToUInt32(LocalAddress) & Mask)}/{PrefixLength}";
 
+    /// <summary>선택 목록에 보여 줄 이름 (예: Wi-Fi (192.168.0.0/24))</summary>
+    public string DisplayName => $"{InterfaceName} ({Network})";
+
     /// <summary>
     /// 주어진 IP가 이 대역에 속하는지 확인한다.
     /// </summary>

@@ -7,8 +7,9 @@ namespace WolManager.ViewModels;
 /// </summary>
 public sealed class MainViewModel : ObservableObject
 {
-    public MainViewModel(PcListViewModel pcList, EditorViewModel editor, LogViewModel log)
+    public MainViewModel(ScanViewModel scan, PcListViewModel pcList, EditorViewModel editor, LogViewModel log)
     {
+        Scan = scan;
         PcList = pcList;
         Editor = editor;
         Log = log;
@@ -31,6 +32,8 @@ public sealed class MainViewModel : ObservableObject
             }
         };
     }
+
+    public ScanViewModel Scan { get; }
 
     public PcListViewModel PcList { get; }
 

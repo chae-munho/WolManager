@@ -131,6 +131,17 @@
         </Style.Triggers>
     </Style>
 
+    <!-- 변환기 -->
+    <BooleanToVisibilityConverter x:Key="BoolToVisibility" />
+
+    <!-- 진행률 -->
+    <Style TargetType="ProgressBar">
+        <Setter Property="Height" Value="6" />
+        <Setter Property="Foreground" Value="{StaticResource AccentBrush}" />
+        <Setter Property="Background" Value="{StaticResource ButtonHoverBrush}" />
+        <Setter Property="BorderThickness" Value="0" />
+    </Style>
+
     <!-- 입력칸 -->
     <Style x:Key="FieldLabelTextStyle" TargetType="TextBlock">
         <Setter Property="Margin" Value="0,0,0,4" />

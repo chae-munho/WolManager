@@ -166,6 +166,61 @@ public sealed class JsonPcRepository : IPcRepository
         }
     }
 
+    /// <summary>
+    /// 스캔 결과를 목록에 병합하고 저장한다.
+    /// MAC이 같으면 IP 갱신, MAC은 다르고 IP가 같으면 MAC 갱신, 둘 다 없으면 신규 등록(대상 체크)한다.
+    /// 응답한 PC는 켜짐으로 표시한다.
+    /// </summary>
+    public MergeSummary MergeScanResults(IReadOnlyList<ScanResult> results)
+    {
+        var added = 0;
+        var updated = 0;
+
+        foreach (var result in results)
+        {
+            var entry = _items.FirstOrDefault(item => item.Mac == result.Mac);
+            if (entry is not null)
+            {
+                if (entry.Ip != result.Ip)
+                {
+                    // 새 IP를 다른 항목이 쓰고 있으면 그 항목의 IP를 비운다.
+                    var conflict = _items.FirstOrDefault(item => item != entry && item.Ip == result.Ip);
+                    if (conflict is not null)
+                    {
+                        conflict.Ip = string.Empty;
+                        _log.Write($"IP 비움: {conflict.Name} ({result.Ip}를 {entry.Name}이(가) 쓰고 있음)");
+                    }
+
+                    _log.Write($"IP 갱신: {entry.Name} ({DisplayIp(entry.Ip)} → {result.Ip})");
+                    entry.Ip = result.Ip;
+                    updated++;
+                }
+            }
+            else if (_items.FirstOrDefault(item => item.Ip == result.Ip) is { } sameIp)
+            {
+                _log.Write($"MAC 갱신 (랜카드 교체로 판단): {sameIp.Name} ({sameIp.Mac} → {result.Mac})");
+                sameIp.Mac = result.Mac;
+                entry = sameIp;
+                updated++;
+            }
+            else
+            {
+                entry = new PcEntry { Name = result.HostName, Mac = result.Mac, Ip = result.Ip, IsTarget = true };
+                Attach(entry);
+                _log.Write($"신규 등록: {entry.Name} ({entry.Mac}, {entry.Ip})");
+                added++;
+            }
+
+            entry.Status = PcStatus.On;
+            entry.WakeRequestedAt = null;
+        }
+
+        Save();
+        return new MergeSummary(results.Count, added, updated);
+    }
+
+    private static string DisplayIp(string ip) => ip.Length == 0 ? "없음" : ip;
+
     private void Attach(PcEntry entry)
     {
         entry.PropertyChanged += OnItemPropertyChanged;

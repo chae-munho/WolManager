@@ -24,10 +24,15 @@ public partial class App : Application
         IDialogService dialogService = new MessageBoxDialogService();
         INetworkInterfaceService networkService = new NetworkInterfaceService();
         IWakeOnLanService wakeOnLanService = new WakeOnLanService(networkService);
+        IArpScanService arpScanService = new ArpScanService(networkService);
         _statusMonitor = new StatusMonitorService(pcRepository, logService);
+
+        // 스캔 영역이 등록된 PC로 기본 대역을 고를 수 있도록 ViewModel보다 먼저 불러온다.
+        pcRepository.Load();
 
         // ViewModel
         var mainViewModel = new MainViewModel(
+            new ScanViewModel(pcRepository, arpScanService, networkService, logService),
             new PcListViewModel(pcRepository, wakeOnLanService, _statusMonitor, dialogService, logService),
             new EditorViewModel(pcRepository, dialogService),
             new LogViewModel(logService));
@@ -36,7 +41,6 @@ public partial class App : Application
         MainWindow = mainWindow;
         mainWindow.Show();
 
-        pcRepository.Load();
         _statusMonitor.Start();
     }
 
