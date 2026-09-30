@@ -1,0 +1,52 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "D:\\UniEye\\Projects\\WolManager\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{2235F112-6844-42C1-A277-233B880D6067}|WolManager\\WolManager.csproj|d:\\unieye\\projects\\wolmanager\\wolmanager\\mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{2235F112-6844-42C1-A277-233B880D6067}|WolManager\\WolManager.csproj|solutionrelative:wolmanager\\mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2235F112-6844-42C1-A277-233B880D6067}|WolManager\\WolManager.csproj|d:\\unieye\\projects\\wolmanager\\wolmanager\\mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2235F112-6844-42C1-A277-233B880D6067}|WolManager\\WolManager.csproj|solutionrelative:wolmanager\\mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "MainWindow.xaml",
+              "DocumentMoniker": "D:\\UniEye\\Projects\\WolManager\\WolManager\\MainWindow.xaml",
+              "RelativeDocumentMoniker": "WolManager\\MainWindow.xaml",
+              "ToolTip": "D:\\UniEye\\Projects\\WolManager\\WolManager\\MainWindow.xaml",
+              "RelativeToolTip": "WolManager\\MainWindow.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2026-09-29T08:36:42.889Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "MainWindow.xaml.cs",
+              "DocumentMoniker": "D:\\UniEye\\Projects\\WolManager\\WolManager\\MainWindow.xaml.cs",
+              "RelativeDocumentMoniker": "WolManager\\MainWindow.xaml.cs",
+              "ToolTip": "D:\\UniEye\\Projects\\WolManager\\WolManager\\MainWindow.xaml.cs",
+              "RelativeToolTip": "WolManager\\MainWindow.xaml.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-09-29T08:36:40.608Z"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
