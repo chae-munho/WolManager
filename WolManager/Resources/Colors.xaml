@@ -21,6 +21,10 @@
     <SolidColorBrush x:Key="ButtonHoverBrush" Color="#EFEEEA" />
     <SolidColorBrush x:Key="ButtonPressedBrush" Color="#E4E2DB" />
 
+    <!-- 목록 행 -->
+    <SolidColorBrush x:Key="RowHoverBrush" Color="#F7F7F5" />
+    <SolidColorBrush x:Key="RowSelectedBrush" Color="#E6EEEE" />
+
     <!-- 제목 표시줄 닫기 버튼 -->
     <SolidColorBrush x:Key="CloseHoverBrush" Color="#C4453C" />
     <SolidColorBrush x:Key="ClosePressedBrush" Color="#A83A32" />

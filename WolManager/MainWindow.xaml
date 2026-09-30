@@ -3,6 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:behaviors="clr-namespace:WolManager.Behaviors"
         xmlns:controls="clr-namespace:WolManager.Controls"
+        xmlns:views="clr-namespace:WolManager.Views"
         Title="PC 원격 켜기"
         Width="920"
         Height="720"
@@ -27,14 +28,14 @@
                 <!-- 스캔 영역 (7단계) -->
                 <Border Grid.Row="0" Style="{StaticResource CardStyle}" MinHeight="72" />
 
-                <!-- PC 목록 영역 (3단계) -->
-                <Border Grid.Row="1" Style="{StaticResource CardStyle}" Margin="0,12,0,0" />
+                <!-- PC 목록 영역 -->
+                <views:PcListView Grid.Row="1" Margin="0,12,0,0" DataContext="{Binding PcList}" />
 
-                <!-- 편집 영역 (4단계) -->
-                <Border Grid.Row="2" Style="{StaticResource CardStyle}" Margin="0,12,0,0" MinHeight="72" />
+                <!-- 편집 영역 -->
+                <views:EditorView Grid.Row="2" Margin="0,12,0,0" DataContext="{Binding Editor}" />
 
-                <!-- 로그 영역 (2단계) -->
-                <Border Grid.Row="3" Style="{StaticResource CardStyle}" Margin="0,12,0,0" />
+                <!-- 로그 영역 -->
+                <views:LogView Grid.Row="3" Margin="0,12,0,0" DataContext="{Binding Log}" />
             </Grid>
         </DockPanel>
     </Border>

@@ -1,4 +1,6 @@
+using System.IO;
 using System.Windows;
+using WolManager.Services;
 using WolManager.ViewModels;
 
 namespace WolManager;
@@ -12,10 +14,23 @@ public partial class App : Application
     {
         base.OnStartup(e);
 
-        var mainViewModel = new MainViewModel();
-        var mainWindow = new MainWindow { DataContext = mainViewModel };
+        // 서비스
+        ILogService logService = new LogService(Dispatcher);
+        IPcRepository pcRepository = new JsonPcRepository(
+            logService,
+            Path.Combine(AppContext.BaseDirectory, Constants.PcFileName));
+        IDialogService dialogService = new MessageBoxDialogService();
 
+        // ViewModel
+        var mainViewModel = new MainViewModel(
+            new PcListViewModel(pcRepository),
+            new EditorViewModel(pcRepository, dialogService),
+            new LogViewModel(logService));
+
+        var mainWindow = new MainWindow { DataContext = mainViewModel };
         MainWindow = mainWindow;
         mainWindow.Show();
+
+        pcRepository.Load();
     }
 }
