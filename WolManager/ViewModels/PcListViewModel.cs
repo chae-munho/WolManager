@@ -19,12 +19,21 @@ public sealed class PcListViewModel : ObservableObject
     private readonly ILogService _log;
     private PcEntry? _selectedPc;
 
-    public PcListViewModel(IPcRepository repository, IWakeOnLanService wakeOnLan, IDialogService dialog, ILogService log)
+    public PcListViewModel(
+        IPcRepository repository,
+        IWakeOnLanService wakeOnLan,
+        IStatusMonitorService statusMonitor,
+        IDialogService dialog,
+        ILogService log)
     {
         _wakeOnLan = wakeOnLan;
         _dialog = dialog;
         _log = log;
         Items = repository.Items;
+
+        RefreshCommand = new AsyncRelayCommand(
+            statusMonitor.RefreshAsync,
+            onError: ex => _log.Write($"상태 확인 중 오류가 발생했습니다. ({ex.Message})"));
 
         WakeCommand = new AsyncRelayCommand<PcEntry>(
             pc => pc is null ? Task.CompletedTask : WakeAsync([pc]),
@@ -43,6 +52,9 @@ public sealed class PcListViewModel : ObservableObject
         get => _selectedPc;
         set => SetProperty(ref _selectedPc, value);
     }
+
+    /// <summary>상태를 지금 바로 다시 확인한다.</summary>
+    public AsyncRelayCommand RefreshCommand { get; }
 
     /// <summary>행의 깨우기 버튼. 파라미터로 PC를 받는다.</summary>
     public AsyncRelayCommand<PcEntry> WakeCommand { get; }

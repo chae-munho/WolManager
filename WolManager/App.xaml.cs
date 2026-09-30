@@ -10,6 +10,8 @@ namespace WolManager;
 /// </summary>
 public partial class App : Application
 {
+    private IStatusMonitorService? _statusMonitor;
+
     protected override void OnStartup(StartupEventArgs e)
     {
         base.OnStartup(e);
@@ -22,10 +24,11 @@ public partial class App : Application
         IDialogService dialogService = new MessageBoxDialogService();
         INetworkInterfaceService networkService = new NetworkInterfaceService();
         IWakeOnLanService wakeOnLanService = new WakeOnLanService(networkService);
+        _statusMonitor = new StatusMonitorService(pcRepository, logService);
 
         // ViewModel
         var mainViewModel = new MainViewModel(
-            new PcListViewModel(pcRepository, wakeOnLanService, dialogService, logService),
+            new PcListViewModel(pcRepository, wakeOnLanService, _statusMonitor, dialogService, logService),
             new EditorViewModel(pcRepository, dialogService),
             new LogViewModel(logService));
 
@@ -34,5 +37,12 @@ public partial class App : Application
         mainWindow.Show();
 
         pcRepository.Load();
+        _statusMonitor.Start();
+    }
+
+    protected override void OnExit(ExitEventArgs e)
+    {
+        _statusMonitor?.Dispose();
+        base.OnExit(e);
     }
 }

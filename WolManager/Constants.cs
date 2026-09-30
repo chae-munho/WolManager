@@ -25,4 +25,13 @@ public static class Constants
 
     /// <summary>매직 패킷 한 번 전송의 타임아웃</summary>
     public static readonly TimeSpan MagicPacketSendTimeout = TimeSpan.FromSeconds(1);
+
+    /// <summary>상태 확인 주기</summary>
+    public static readonly TimeSpan StatusCheckInterval = TimeSpan.FromSeconds(5);
+
+    /// <summary>상태 확인 Ping 타임아웃 (밀리초)</summary>
+    public const int PingTimeoutMilliseconds = 1000;
+
+    /// <summary>깨우기 요청 후 "깨우는 중"으로 유지하는 시간</summary>
+    public static readonly TimeSpan WakingDuration = TimeSpan.FromMinutes(3);
 }
