@@ -9,8 +9,7 @@
                 <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
                     <!-- 6단계에서 커맨드 연결 -->
                     <Button Content="상태 새로고침" Margin="0,0,8,0" IsEnabled="False" />
-                    <!-- 5단계에서 커맨드 연결 -->
-                    <Button Content="전체 깨우기" Style="{StaticResource PrimaryButtonStyle}" IsEnabled="False" />
+                    <Button Content="전체 깨우기" Style="{StaticResource PrimaryButtonStyle}" Command="{Binding WakeAllCommand}" />
                 </StackPanel>
                 <TextBlock VerticalAlignment="Center" Style="{StaticResource SectionTitleTextStyle}" Text="PC 목록" />
             </DockPanel>
@@ -49,8 +48,10 @@
                         <DataGridTemplateColumn Width="90">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
-                                    <!-- 5단계에서 커맨드 연결 -->
-                                    <Button Content="깨우기" Style="{StaticResource SmallButtonStyle}" IsEnabled="False" />
+                                    <Button Content="깨우기"
+                                            Style="{StaticResource SmallButtonStyle}"
+                                            Command="{Binding DataContext.WakeCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                            CommandParameter="{Binding}" />
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>

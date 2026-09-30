@@ -20,10 +20,12 @@ public partial class App : Application
             logService,
             Path.Combine(AppContext.BaseDirectory, Constants.PcFileName));
         IDialogService dialogService = new MessageBoxDialogService();
+        INetworkInterfaceService networkService = new NetworkInterfaceService();
+        IWakeOnLanService wakeOnLanService = new WakeOnLanService(networkService);
 
         // ViewModel
         var mainViewModel = new MainViewModel(
-            new PcListViewModel(pcRepository),
+            new PcListViewModel(pcRepository, wakeOnLanService, dialogService, logService),
             new EditorViewModel(pcRepository, dialogService),
             new LogViewModel(logService));
 
