@@ -1,0 +1,49 @@
+<UserControl x:Class="WolManager.Controls.TitleBar"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:behaviors="clr-namespace:WolManager.Behaviors"
+             Height="34">
+    <Border BorderBrush="{StaticResource LineBrush}" BorderThickness="0,0,0,1">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <TextBlock Margin="14,0,0,0"
+                       VerticalAlignment="Center"
+                       FontWeight="SemiBold"
+                       Text="{Binding Title, RelativeSource={RelativeSource AncestorType=Window}}" />
+
+            <StackPanel Grid.Column="1" Orientation="Horizontal">
+                <Button Style="{StaticResource TitleBarButtonStyle}"
+                        ToolTip="최소화"
+                        Content="&#xE921;"
+                        Command="{x:Static behaviors:WindowCommands.Minimize}"
+                        CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}" />
+
+                <Button Command="{x:Static behaviors:WindowCommands.ToggleMaximize}"
+                        CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}">
+                    <Button.Style>
+                        <Style TargetType="Button" BasedOn="{StaticResource TitleBarButtonStyle}">
+                            <Setter Property="Content" Value="&#xE922;" />
+                            <Setter Property="ToolTip" Value="최대화" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding WindowState, RelativeSource={RelativeSource AncestorType=Window}}" Value="Maximized">
+                                    <Setter Property="Content" Value="&#xE923;" />
+                                    <Setter Property="ToolTip" Value="이전 크기로" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
+
+                <Button Style="{StaticResource TitleBarCloseButtonStyle}"
+                        ToolTip="닫기"
+                        Content="&#xE8BB;"
+                        Command="{x:Static behaviors:WindowCommands.Close}"
+                        CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}" />
+            </StackPanel>
+        </Grid>
+    </Border>
+</UserControl>

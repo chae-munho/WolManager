@@ -1,0 +1,34 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- 기본 배색 (밝은 톤) -->
+    <SolidColorBrush x:Key="BackgroundBrush" Color="#F5F5F4" />
+    <SolidColorBrush x:Key="CardBrush" Color="#FFFFFF" />
+    <SolidColorBrush x:Key="LineBrush" Color="#D6D4CC" />
+
+    <!-- 강조색 (하나만 사용) -->
+    <SolidColorBrush x:Key="AccentBrush" Color="#2F5D62" />
+    <SolidColorBrush x:Key="AccentHoverBrush" Color="#274E52" />
+    <SolidColorBrush x:Key="AccentPressedBrush" Color="#1F3F42" />
+    <SolidColorBrush x:Key="OnAccentBrush" Color="#FFFFFF" />
+
+    <!-- 글자 -->
+    <SolidColorBrush x:Key="TextPrimaryBrush" Color="#2C2C2A" />
+    <SolidColorBrush x:Key="TextSecondaryBrush" Color="#6B6A65" />
+    <SolidColorBrush x:Key="TextDisabledBrush" Color="#B4B2A9" />
+
+    <!-- 일반 버튼 상호작용 -->
+    <SolidColorBrush x:Key="ButtonHoverBrush" Color="#EFEEEA" />
+    <SolidColorBrush x:Key="ButtonPressedBrush" Color="#E4E2DB" />
+
+    <!-- 제목 표시줄 닫기 버튼 -->
+    <SolidColorBrush x:Key="CloseHoverBrush" Color="#C4453C" />
+    <SolidColorBrush x:Key="ClosePressedBrush" Color="#A83A32" />
+
+    <!-- 상태 색상 -->
+    <SolidColorBrush x:Key="StatusOnBrush" Color="#3B7D5A" />
+    <SolidColorBrush x:Key="StatusOffBrush" Color="#5F5E5A" />
+    <SolidColorBrush x:Key="StatusWakingBrush" Color="#B98A3E" />
+    <SolidColorBrush x:Key="StatusUnknownBrush" Color="#B4B2A9" />
+
+</ResourceDictionary>

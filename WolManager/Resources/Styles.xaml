@@ -1,0 +1,172 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:sys="clr-namespace:System;assembly=System.Runtime">
+
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="/WolManager;component/Resources/Colors.xaml" />
+    </ResourceDictionary.MergedDictionaries>
+
+    <!-- 글꼴 -->
+    <FontFamily x:Key="DefaultFont">Malgun Gothic</FontFamily>
+    <FontFamily x:Key="MonoFont">Consolas, Malgun Gothic</FontFamily>
+    <FontFamily x:Key="IconFont">Segoe MDL2 Assets</FontFamily>
+    <sys:Double x:Key="DefaultFontSize">13</sys:Double>
+    <sys:Double x:Key="TitleFontSize">15</sys:Double>
+
+    <!-- 창 -->
+    <Style x:Key="AppWindowStyle" TargetType="Window">
+        <Setter Property="Background" Value="{StaticResource BackgroundBrush}" />
+        <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}" />
+        <Setter Property="FontFamily" Value="{StaticResource DefaultFont}" />
+        <Setter Property="FontSize" Value="{StaticResource DefaultFontSize}" />
+        <Setter Property="WindowChrome.WindowChrome">
+            <Setter.Value>
+                <WindowChrome CaptionHeight="34"
+                              ResizeBorderThickness="6"
+                              GlassFrameThickness="0"
+                              CornerRadius="0"
+                              UseAeroCaptionButtons="False" />
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- 창 최상위 테두리. 최대화하면 화면 밖으로 넘치는 만큼 여백을 준다. -->
+    <Style x:Key="WindowRootStyle" TargetType="Border">
+        <Setter Property="Background" Value="{StaticResource BackgroundBrush}" />
+        <Setter Property="BorderBrush" Value="{StaticResource LineBrush}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding WindowState, RelativeSource={RelativeSource AncestorType=Window}}" Value="Maximized">
+                <Setter Property="BorderThickness" Value="0" />
+                <Setter Property="Margin" Value="{x:Static SystemParameters.WindowResizeBorderThickness}" />
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <!-- 카드 -->
+    <Style x:Key="CardStyle" TargetType="Border">
+        <Setter Property="Background" Value="{StaticResource CardBrush}" />
+        <Setter Property="BorderBrush" Value="{StaticResource LineBrush}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="6" />
+        <Setter Property="Padding" Value="16" />
+    </Style>
+
+    <!-- 글자 -->
+    <Style x:Key="SectionTitleTextStyle" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="{StaticResource TitleFontSize}" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+    </Style>
+
+    <Style x:Key="HintTextStyle" TargetType="TextBlock">
+        <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}" />
+    </Style>
+
+    <Style x:Key="MonoTextStyle" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="{StaticResource MonoFont}" />
+    </Style>
+
+    <!-- 일반 버튼 -->
+    <Style TargetType="Button">
+        <Setter Property="Background" Value="{StaticResource CardBrush}" />
+        <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}" />
+        <Setter Property="BorderBrush" Value="{StaticResource LineBrush}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="Padding" Value="14,6" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="4"
+                            SnapsToDevicePixels="True">
+                        <ContentPresenter Margin="{TemplateBinding Padding}"
+                                          HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"
+                                          RecognizesAccessKey="True" />
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="{StaticResource ButtonHoverBrush}" />
+            </Trigger>
+            <Trigger Property="IsPressed" Value="True">
+                <Setter Property="Background" Value="{StaticResource ButtonPressedBrush}" />
+            </Trigger>
+            <Trigger Property="IsEnabled" Value="False">
+                <Setter Property="Foreground" Value="{StaticResource TextDisabledBrush}" />
+                <Setter Property="Cursor" Value="Arrow" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <!-- 주 버튼 (전체 깨우기) -->
+    <Style x:Key="PrimaryButtonStyle" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+        <Setter Property="Background" Value="{StaticResource AccentBrush}" />
+        <Setter Property="Foreground" Value="{StaticResource OnAccentBrush}" />
+        <Setter Property="BorderBrush" Value="{StaticResource AccentBrush}" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="Padding" Value="20,8" />
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="{StaticResource AccentHoverBrush}" />
+            </Trigger>
+            <Trigger Property="IsPressed" Value="True">
+                <Setter Property="Background" Value="{StaticResource AccentPressedBrush}" />
+            </Trigger>
+            <Trigger Property="IsEnabled" Value="False">
+                <Setter Property="Background" Value="{StaticResource TextDisabledBrush}" />
+                <Setter Property="BorderBrush" Value="{StaticResource TextDisabledBrush}" />
+                <Setter Property="Foreground" Value="{StaticResource OnAccentBrush}" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <!-- 제목 표시줄 버튼 -->
+    <Style x:Key="TitleBarButtonStyle" TargetType="Button">
+        <Setter Property="Width" Value="46" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}" />
+        <Setter Property="FontFamily" Value="{StaticResource IconFont}" />
+        <Setter Property="FontSize" Value="10" />
+        <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+        <Setter Property="IsTabStop" Value="False" />
+        <Setter Property="WindowChrome.IsHitTestVisibleInChrome" Value="True" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border Background="{TemplateBinding Background}">
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="{StaticResource ButtonHoverBrush}" />
+            </Trigger>
+            <Trigger Property="IsPressed" Value="True">
+                <Setter Property="Background" Value="{StaticResource ButtonPressedBrush}" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="TitleBarCloseButtonStyle" TargetType="Button" BasedOn="{StaticResource TitleBarButtonStyle}">
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="{StaticResource CloseHoverBrush}" />
+                <Setter Property="Foreground" Value="{StaticResource OnAccentBrush}" />
+            </Trigger>
+            <Trigger Property="IsPressed" Value="True">
+                <Setter Property="Background" Value="{StaticResource ClosePressedBrush}" />
+                <Setter Property="Foreground" Value="{StaticResource OnAccentBrush}" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+</ResourceDictionary>

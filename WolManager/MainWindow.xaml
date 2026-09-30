@@ -1,12 +1,41 @@
-﻿<Window x:Class="WolManager.MainWindow"
+<Window x:Class="WolManager.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:WolManager"
-        mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
+        xmlns:behaviors="clr-namespace:WolManager.Behaviors"
+        xmlns:controls="clr-namespace:WolManager.Controls"
+        Title="PC 원격 켜기"
+        Width="920"
+        Height="720"
+        MinWidth="720"
+        MinHeight="560"
+        WindowStartupLocation="CenterScreen"
+        Style="{StaticResource AppWindowStyle}"
+        behaviors:WindowDragBehavior.IsEnabled="True">
 
-    </Grid>
+    <Border Style="{StaticResource WindowRootStyle}">
+        <DockPanel>
+            <controls:TitleBar DockPanel.Dock="Top" />
+
+            <Grid Margin="16">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="160" />
+                </Grid.RowDefinitions>
+
+                <!-- 스캔 영역 (7단계) -->
+                <Border Grid.Row="0" Style="{StaticResource CardStyle}" MinHeight="72" />
+
+                <!-- PC 목록 영역 (3단계) -->
+                <Border Grid.Row="1" Style="{StaticResource CardStyle}" Margin="0,12,0,0" />
+
+                <!-- 편집 영역 (4단계) -->
+                <Border Grid.Row="2" Style="{StaticResource CardStyle}" Margin="0,12,0,0" MinHeight="72" />
+
+                <!-- 로그 영역 (2단계) -->
+                <Border Grid.Row="3" Style="{StaticResource CardStyle}" Margin="0,12,0,0" />
+            </Grid>
+        </DockPanel>
+    </Border>
 </Window>
