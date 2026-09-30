@@ -50,6 +50,6 @@ public static class Constants
     /// <summary>넓은 대역을 줄여서 스캔할 때 쓰는 접두사 길이</summary>
     public const int ScanFallbackPrefixLength = 24;
 
-    /// <summary>스캔과 깨우기에서 제외하는 가상 어댑터 이름/설명 키워드</summary>
+    /// <summary>가상 어댑터 이름/설명 키워드. 게이트웨이가 없으면 스캔과 깨우기에서 제외한다</summary>
     public static readonly string[] VirtualAdapterKeywords = ["VMware", "VirtualBox", "Hyper-V", "vEthernet"];
 }
