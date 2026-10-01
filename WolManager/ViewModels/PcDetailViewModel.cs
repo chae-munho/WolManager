@@ -38,7 +38,7 @@ public sealed class PcDetailViewModel : ObservableObject
         _updateCommand = new RelayCommand(Update, () => Pc is not null);
         _deleteCommand = new RelayCommand(Delete, () => Pc is not null);
         _wakeCommand = new AsyncRelayCommand(
-            () => Pc is { } pc ? _power.WakeAsync([pc]) : Task.CompletedTask,
+            () => Pc is { } pc ? _power.WakeOneAsync(pc) : Task.CompletedTask,
             () => Pc is not null,
             ex => _log.Write($"깨우기 중 오류가 발생했습니다. ({ex.Message})"));
         _shutdownCommand = new AsyncRelayCommand(
@@ -124,7 +124,7 @@ public sealed class PcDetailViewModel : ObservableObject
         var error = PcFormValidator.Validate(_repository.Items, pc, Name, Mac, Ip, out var name, out var mac, out var ip);
         if (error is not null)
         {
-            _dialog.ShowWarning(error);
+            _dialog.ShowWarning(error, "입력을 확인하세요");
             return;
         }
 
@@ -134,7 +134,7 @@ public sealed class PcDetailViewModel : ObservableObject
 
     private void Delete()
     {
-        if (Pc is not { } pc || !_dialog.Confirm($"'{pc.Name}'을(를) 목록에서 삭제할까요?"))
+        if (Pc is not { } pc || !_dialog.Confirm($"'{pc.Name}'을(를) 목록에서 삭제할까요?", "PC 삭제", "삭제", DialogKind.Warning))
         {
             return;
         }

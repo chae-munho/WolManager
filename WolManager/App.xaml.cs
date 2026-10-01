@@ -19,7 +19,7 @@ public partial class App : Application
         IPcRepository pcRepository = new JsonPcRepository(
             logService,
             Path.Combine(AppContext.BaseDirectory, Constants.PcFileName));
-        IDialogService dialogService = new MessageBoxDialogService();
+        IDialogService dialogService = new DialogService();
         INetworkInterfaceService networkService = new NetworkInterfaceService();
         IWakeOnLanService wakeOnLanService = new WakeOnLanService(networkService);
         IArpScanService arpScanService = new ArpScanService(networkService);

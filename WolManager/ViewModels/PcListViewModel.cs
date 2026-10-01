@@ -80,7 +80,10 @@ public sealed class PcListViewModel : ObservableObject
     /// 카드를 한 줄에 놓는 개수. 대수에 맞춰 가로가 조금 긴 격자가 되도록 정해, 스크롤 없이 한 화면에 모두 보이게 한다.
     public int TileColumns => Math.Max(1, (int)Math.Ceiling(Math.Sqrt(Items.Count * Constants.TileGridAspectRatio)));
 
-    /// 상태별 대수 요약 (예: 켜짐 18대, 응답 없음 3대)
+    /// 상태별 대수. 목록 위에 색 점과 함께 보여 준다.
+    public ObservableCollection<StatusCount> StatusCounts { get; } = [];
+
+    /// 상태별 대수 요약 문장 (예: 켜짐 18대 · 응답 없음 3대). 새로고침 로그에 쓴다.
     public string Summary
     {
         get => _summary;
@@ -101,19 +104,21 @@ public sealed class PcListViewModel : ObservableObject
         var skipped = Items.Count - toWake.Count;
         if (toWake.Count == 0)
         {
-            const string allOn = "모든 PC가 켜져 있습니다.";
+            const string allOn = "모든 PC가 켜져 있어 깨울 PC가 없습니다.";
             _log.Write(allOn);
-            _dialog.ShowWarning(allOn);
+            _dialog.ShowInfo(allOn, "전체 깨우기");
             return;
         }
 
+        // 전체 선택을 풀면 원래 선택도 사라지므로, 끝난 뒤 되돌린다.
+        var previous = SelectedPc;
         IsAllSelected = true;
         try
         {
             var question = skipped > 0
-                ? $"PC {Items.Count}대 중 켜져 있지 않은 {toWake.Count}대를 깨울까요?\n(켜져 있는 {skipped}대는 제외)"
-                : $"PC {toWake.Count}대를 모두 깨울까요?";
-            if (!_dialog.Confirm(question))
+                ? $"PC {Items.Count}대 중 켜져 있지 않은 {toWake.Count}대를 깨웁니다.\n켜져 있는 {skipped}대는 제외됩니다."
+                : $"PC {toWake.Count}대를 모두 깨웁니다.";
+            if (!_dialog.Confirm(question, "전체 깨우기", "깨우기"))
             {
                 return;
             }
@@ -126,6 +131,10 @@ public sealed class PcListViewModel : ObservableObject
         finally
         {
             IsAllSelected = false;
+            if (previous is not null && Items.Contains(previous))
+            {
+                SelectedPc = previous;
+            }
         }
     }
 
@@ -159,8 +168,13 @@ public sealed class PcListViewModel : ObservableObject
     private void UpdateSummary()
     {
         var counts = Items.GroupBy(pc => pc.Status).ToDictionary(g => g.Key, g => g.Count());
-        Summary = string.Join(" · ", StatusLabels
-            .Where(p => counts.ContainsKey(p.Status))
-            .Select(p => $"{p.Label} {counts[p.Status]}대"));
+        var present = StatusLabels.Where(p => counts.ContainsKey(p.Status)).ToList();
+        Summary = string.Join(" · ", present.Select(p => $"{p.Label} {counts[p.Status]}대"));
+
+        StatusCounts.Clear();
+        foreach (var (status, _) in present)
+        {
+            StatusCounts.Add(new StatusCount(status, counts[status]));
+        }
     }
 }

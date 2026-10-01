@@ -28,17 +28,19 @@ public sealed class PcPowerService : IPcPowerService
         if (_wakeOnLan.IsOnSameNetwork(pcs.Select(pc => pc.Ip)) == false)
         {
             _log.Write(DifferentNetworkMessage);
-            _dialog.ShowWarning(DifferentNetworkMessage);
+            _dialog.ShowWarning(DifferentNetworkMessage, "다른 네트워크에 연결되어 있습니다");
         }
 
         var results = await Task.WhenAll(pcs.Select(async pc => (Pc: pc, Result: await _wakeOnLan.WakeAsync(pc.Mac, pc.Ip))));
 
+        var failedLines = new List<string>();
         foreach (var (pc, result) in results)
         {
             var failures = string.Join(", ", result.Failures.Distinct());
             if (!result.Succeeded)
             {
                 _log.Write($"깨우기 실패: {pc.Name} - {failures}");
+                failedLines.Add($"{pc.Name}: {failures}");
                 continue;
             }
 
@@ -51,6 +53,24 @@ public sealed class PcPowerService : IPcPowerService
                 _log.Write($"일부 연결로는 보내지 못했습니다: {failures}");
             }
         }
+
+        if (failedLines.Count > 0)
+        {
+            _dialog.ShowWarning(
+                $"다음 PC에는 깨우기 신호를 보내지 못했습니다.\n{string.Join("\n", failedLines)}",
+                "깨우지 못한 PC가 있습니다");
+        }
+    }
+
+    /// 확인을 받은 뒤 PC 한 대에 매직 패킷을 보낸다.
+    public Task WakeOneAsync(PcEntry pc)
+    {
+        if (!_dialog.Confirm($"'{pc.Name}' PC를 깨울까요?", "PC 깨우기", "깨우기"))
+        {
+            return Task.CompletedTask;
+        }
+
+        return WakeAsync([pc]);
     }
 
     /// 확인을 받은 뒤 PC에 원격 종료를 요청하고, 받아들여지면 끄는 중으로 바꾼다.
@@ -59,7 +79,7 @@ public sealed class PcPowerService : IPcPowerService
         var question = Constants.ShutdownForceAppsClosed
             ? $"'{pc.Name}' PC를 끌까요?\n실행 중인 프로그램은 저장 없이 강제로 닫힙니다."
             : $"'{pc.Name}' PC를 끌까요?";
-        if (!_dialog.Confirm(question))
+        if (!_dialog.Confirm(question, "PC 끄기", "끄기", DialogKind.Warning))
         {
             return;
         }
@@ -69,7 +89,7 @@ public sealed class PcPowerService : IPcPowerService
         if (!result.Succeeded)
         {
             _log.Write($"끄기 실패: {pc.Name} - {result.Message}");
-            _dialog.ShowWarning($"'{pc.Name}'을(를) 끄지 못했습니다.\n{result.Message}");
+            _dialog.ShowWarning(result.Message, $"'{pc.Name}'을(를) 끄지 못했습니다");
             return;
         }
 

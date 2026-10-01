@@ -68,7 +68,7 @@ public sealed class AddPcViewModel : ObservableObject
         var error = PcFormValidator.Validate(_repository.Items, null, Name, Mac, Ip, out var name, out var mac, out var ip);
         if (error is not null)
         {
-            _dialog.ShowWarning(error);
+            _dialog.ShowWarning(error, "입력을 확인하세요");
             return;
         }
 
