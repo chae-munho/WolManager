@@ -9,9 +9,7 @@ using WolManager.Validation;
 
 namespace WolManager.Services;
 
-/// <summary>
 /// PC 목록을 JSON 파일로 저장하는 구현.
-/// </summary>
 public sealed class JsonPcRepository : IPcRepository
 {
     private static readonly JsonSerializerOptions JsonOptions = new()
@@ -32,14 +30,10 @@ public sealed class JsonPcRepository : IPcRepository
         Items = new ReadOnlyObservableCollection<PcEntry>(_items);
     }
 
-    /// <summary>
     /// PC 목록.
-    /// </summary>
     public ReadOnlyObservableCollection<PcEntry> Items { get; }
 
-    /// <summary>
     /// 저장 파일에서 목록을 불러온다. 파일이 없거나 깨져 있으면 빈 목록으로 시작한다.
-    /// </summary>
     public void Load()
     {
         foreach (var item in _items)
@@ -105,10 +99,8 @@ public sealed class JsonPcRepository : IPcRepository
         _log.Write($"저장된 PC 목록을 불러왔습니다. ({_items.Count}대)");
     }
 
-    /// <summary>
     /// 현재 목록을 저장 파일에 기록한다.
-    /// </summary>
-    /// <returns>저장에 성공하면 true</returns>
+    /// 반환: 저장에 성공하면 true
     public bool Save()
     {
         var records = _items.Select(item => new PcRecord
@@ -131,9 +123,7 @@ public sealed class JsonPcRepository : IPcRepository
         }
     }
 
-    /// <summary>
     /// PC를 목록에 추가하고 저장한다.
-    /// </summary>
     public void Add(PcEntry entry)
     {
         Attach(entry);
@@ -141,9 +131,7 @@ public sealed class JsonPcRepository : IPcRepository
         Save();
     }
 
-    /// <summary>
     /// PC의 이름, MAC, IP를 바꾸고 저장한다.
-    /// </summary>
     public void Update(PcEntry entry, string name, string mac, string ip)
     {
         entry.Name = name;
@@ -153,9 +141,7 @@ public sealed class JsonPcRepository : IPcRepository
         Save();
     }
 
-    /// <summary>
     /// PC를 목록에서 삭제하고 저장한다.
-    /// </summary>
     public void Remove(PcEntry entry)
     {
         if (_items.Remove(entry))
@@ -166,11 +152,9 @@ public sealed class JsonPcRepository : IPcRepository
         }
     }
 
-    /// <summary>
     /// 스캔 결과를 목록에 병합하고 저장한다.
     /// MAC이 같으면 IP 갱신, MAC은 다르고 IP가 같으면 MAC 갱신, 둘 다 없으면 신규 등록(대상 체크 안 함)한다.
     /// 응답한 PC는 켜짐으로 표시한다.
-    /// </summary>
     public MergeSummary MergeScanResults(IReadOnlyList<ScanResult> results)
     {
         var added = 0;

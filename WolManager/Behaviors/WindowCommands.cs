@@ -4,9 +4,7 @@ using WolManager.Mvvm;
 
 namespace WolManager.Behaviors;
 
-/// <summary>
 /// 커스텀 제목 표시줄의 창 버튼 커맨드. 커맨드 파라미터로 대상 Window를 받는다.
-/// </summary>
 public static class WindowCommands
 {
     public static ICommand Minimize { get; } = new RelayCommand<Window>(window =>

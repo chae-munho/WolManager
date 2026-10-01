@@ -4,9 +4,7 @@ using WolManager.Models;
 
 namespace WolManager.Controls;
 
-/// <summary>
 /// 상태 점과 상태 글자를 함께 보여 주는 컨트롤.
-/// </summary>
 public partial class StatusIndicator : UserControl
 {
     public static readonly DependencyProperty StatusProperty = DependencyProperty.Register(

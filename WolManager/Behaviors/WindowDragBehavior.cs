@@ -5,10 +5,8 @@ using WolManager.Native;
 
 namespace WolManager.Behaviors;
 
-/// <summary>
 /// 창의 빈 영역을 마우스로 끌어 창을 이동할 수 있게 하는 Attached Behavior.
 /// 버튼, 입력칸처럼 클릭을 직접 처리하는 컨트롤 위에서는 동작하지 않는다.
-/// </summary>
 public static class WindowDragBehavior
 {
     public static readonly DependencyProperty IsEnabledProperty = DependencyProperty.RegisterAttached(

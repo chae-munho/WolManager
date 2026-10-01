@@ -3,22 +3,18 @@ using WolManager.Validation;
 
 namespace WolManager.Services;
 
-/// <summary>
 /// Wake-on-LAN 매직 패킷 생성.
-/// </summary>
 public static class MagicPacket
 {
     private const int HeaderLength = 6;
     private const int MacLength = 6;
     private const int MacRepeatCount = 16;
 
-    /// <summary>매직 패킷 길이 (FF 6바이트 + MAC 6바이트 × 16회 = 102바이트)</summary>
+    /// 매직 패킷 길이 (FF 6바이트 + MAC 6바이트 × 16회 = 102바이트)
     public const int Length = HeaderLength + MacLength * MacRepeatCount;
 
-    /// <summary>
     /// MAC 주소로 매직 패킷을 만든다.
-    /// </summary>
-    /// <returns>MAC 형식이 올바르면 true</returns>
+    /// 반환: MAC 형식이 올바르면 true
     public static bool TryCreate(string mac, out byte[] packet)
     {
         packet = [];

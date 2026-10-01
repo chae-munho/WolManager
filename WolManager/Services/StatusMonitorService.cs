@@ -4,10 +4,8 @@ using WolManager.Validation;
 
 namespace WolManager.Services;
 
-/// <summary>
 /// Ping으로 PC 상태를 판정하는 구현.
 /// UI 스레드에서 시작하므로 await 이후의 상태 변경도 UI 스레드에서 일어난다.
-/// </summary>
 public sealed class StatusMonitorService : IStatusMonitorService
 {
     private readonly IPcRepository _repository;
@@ -21,9 +19,7 @@ public sealed class StatusMonitorService : IStatusMonitorService
         _log = log;
     }
 
-    /// <summary>
     /// 바로 한 번 확인하고, 이후 정해진 주기마다 확인한다.
-    /// </summary>
     public void Start()
     {
         if (_cancellation is not null)
@@ -35,9 +31,7 @@ public sealed class StatusMonitorService : IStatusMonitorService
         _ = RunAsync(_cancellation.Token);
     }
 
-    /// <summary>
     /// 주기적인 확인을 멈춘다.
-    /// </summary>
     public void Stop()
     {
         _cancellation?.Cancel();
@@ -45,9 +39,7 @@ public sealed class StatusMonitorService : IStatusMonitorService
         _cancellation = null;
     }
 
-    /// <summary>
     /// 지금 바로 한 번 확인한다. 이전 확인이 진행 중이면 건너뛴다.
-    /// </summary>
     public async Task RefreshAsync()
     {
         if (_isChecking)

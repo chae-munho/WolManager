@@ -5,9 +5,7 @@ using WolManager.Validation;
 
 namespace WolManager.Services;
 
-/// <summary>
 /// NIC마다 로컬 IP에 바인딩한 UDP 소켓으로 매직 패킷을 보내는 구현.
-/// </summary>
 public sealed class WakeOnLanService : IWakeOnLanService
 {
     private readonly INetworkInterfaceService _network;
@@ -17,10 +15,8 @@ public sealed class WakeOnLanService : IWakeOnLanService
         _network = network;
     }
 
-    /// <summary>
     /// 주어진 IP 중 하나라도 마스터 PC의 NIC 대역에 속하는지 확인한다.
-    /// </summary>
-    /// <returns>속하면 true, 하나도 속하지 않으면 false, 비교할 IP가 없으면 null</returns>
+    /// 반환: 속하면 true, 하나도 속하지 않으면 false, 비교할 IP가 없으면 null
     public bool? IsOnSameNetwork(IEnumerable<string> ips)
     {
         var addresses = ips.Select(ParseIp).OfType<IPAddress>().ToList();
@@ -33,10 +29,8 @@ public sealed class WakeOnLanService : IWakeOnLanService
         return addresses.Any(address => subnets.Any(subnet => subnet.Contains(address)));
     }
 
-    /// <summary>
     /// 매직 패킷을 NIC별 서브넷 브로드캐스트 주소로 정해진 횟수만큼 보낸다.
     /// IP가 속한 대역의 NIC가 있으면 그 NIC로만, 없으면 모든 NIC로 보낸다.
-    /// </summary>
     public async Task<WakeResult> WakeAsync(string mac, string ip, CancellationToken cancellationToken = default)
     {
         if (!MagicPacket.TryCreate(mac, out var packet))

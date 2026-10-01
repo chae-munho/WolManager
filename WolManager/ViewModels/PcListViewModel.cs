@@ -6,9 +6,7 @@ using WolManager.Services;
 
 namespace WolManager.ViewModels;
 
-/// <summary>
 /// PC 목록 영역 ViewModel. 개별/전체 깨우기를 맡는다.
-/// </summary>
 public sealed class PcListViewModel : ObservableObject
 {
     private const string DifferentNetworkMessage =
@@ -46,20 +44,20 @@ public sealed class PcListViewModel : ObservableObject
 
     public ReadOnlyObservableCollection<PcEntry> Items { get; }
 
-    /// <summary>목록에서 선택한 PC. 메인 ViewModel이 편집 영역과 연결한다.</summary>
+    /// 목록에서 선택한 PC. 메인 ViewModel이 편집 영역과 연결한다.
     public PcEntry? SelectedPc
     {
         get => _selectedPc;
         set => SetProperty(ref _selectedPc, value);
     }
 
-    /// <summary>상태를 지금 바로 다시 확인한다.</summary>
+    /// 상태를 지금 바로 다시 확인한다.
     public AsyncRelayCommand RefreshCommand { get; }
 
-    /// <summary>행의 깨우기 버튼. 파라미터로 PC를 받는다.</summary>
+    /// 행의 깨우기 버튼. 파라미터로 PC를 받는다.
     public AsyncRelayCommand<PcEntry> WakeCommand { get; }
 
-    /// <summary>대상으로 체크된 PC 중 켜져 있지 않은 PC를 모두 깨운다.</summary>
+    /// 대상으로 체크된 PC 중 켜져 있지 않은 PC를 모두 깨운다.
     public AsyncRelayCommand WakeAllCommand { get; }
 
     private async Task WakeAllAsync()

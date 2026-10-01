@@ -6,9 +6,7 @@ using WolManager.Services;
 
 namespace WolManager.ViewModels;
 
-/// <summary>
 /// 스캔 영역 ViewModel. 대역을 골라 ARP 스캔하고 결과를 목록에 병합한다.
-/// </summary>
 public sealed class ScanViewModel : ObservableObject
 {
     private const string HintMessage = "대상 PC를 모두 켜 둔 상태에서 스캔하세요. 켜져 있는 장비만 찾습니다.";
@@ -43,7 +41,7 @@ public sealed class ScanViewModel : ObservableObject
         }
     }
 
-    /// <summary>스캔할 수 있는 대역 목록</summary>
+    /// 스캔할 수 있는 대역 목록
     public ObservableCollection<SubnetInfo> Subnets { get; } = new();
 
     public SubnetInfo? SelectedSubnet
@@ -64,7 +62,7 @@ public sealed class ScanViewModel : ObservableObject
         }
     }
 
-    /// <summary>스캔 중이 아니면 true (대역 선택 활성화용)</summary>
+    /// 스캔 중이 아니면 true (대역 선택 활성화용)
     public bool IsIdle => !IsScanning;
 
     public int ProgressDone
@@ -79,7 +77,7 @@ public sealed class ScanViewModel : ObservableObject
         private set => SetProperty(ref _progressTotal, value);
     }
 
-    /// <summary>안내 또는 결과 문구</summary>
+    /// 안내 또는 결과 문구
     public string Message
     {
         get => _message;

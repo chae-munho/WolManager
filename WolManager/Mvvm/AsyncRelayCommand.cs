@@ -2,9 +2,7 @@ using System.Windows.Input;
 
 namespace WolManager.Mvvm;
 
-/// <summary>
 /// 비동기 동작을 실행하는 커맨드. 실행 중에는 비활성화되고, 예외는 오류 처리기로 넘긴다.
-/// </summary>
 public sealed class AsyncRelayCommand : ObservableObject, ICommand
 {
     private readonly Func<Task> _execute;
@@ -21,9 +19,7 @@ public sealed class AsyncRelayCommand : ObservableObject, ICommand
 
     public event EventHandler? CanExecuteChanged;
 
-    /// <summary>
     /// 현재 실행 중인지 여부.
-    /// </summary>
     public bool IsRunning
     {
         get => _isRunning;
@@ -44,9 +40,7 @@ public sealed class AsyncRelayCommand : ObservableObject, ICommand
         _ = ExecuteAsync();
     }
 
-    /// <summary>
     /// 커맨드를 실행하고 끝날 때까지 기다린다. 예외는 오류 처리기로 넘기고 밖으로 던지지 않는다.
-    /// </summary>
     public async Task ExecuteAsync()
     {
         if (!CanExecute(null))
@@ -69,15 +63,11 @@ public sealed class AsyncRelayCommand : ObservableObject, ICommand
         }
     }
 
-    /// <summary>
     /// 실행 가능 여부를 다시 평가하도록 알린다.
-    /// </summary>
     public void RaiseCanExecuteChanged() => CanExecuteChanged?.Invoke(this, EventArgs.Empty);
 }
 
-/// <summary>
 /// 커맨드 파라미터를 받는 비동기 커맨드. 실행 중에는 비활성화되고, 예외는 오류 처리기로 넘긴다.
-/// </summary>
 public sealed class AsyncRelayCommand<T> : ObservableObject, ICommand
 {
     private readonly Func<T?, Task> _execute;
@@ -94,9 +84,7 @@ public sealed class AsyncRelayCommand<T> : ObservableObject, ICommand
 
     public event EventHandler? CanExecuteChanged;
 
-    /// <summary>
     /// 현재 실행 중인지 여부.
-    /// </summary>
     public bool IsRunning
     {
         get => _isRunning;
@@ -117,9 +105,7 @@ public sealed class AsyncRelayCommand<T> : ObservableObject, ICommand
         _ = ExecuteAsync(Convert(parameter));
     }
 
-    /// <summary>
     /// 커맨드를 실행하고 끝날 때까지 기다린다. 예외는 오류 처리기로 넘기고 밖으로 던지지 않는다.
-    /// </summary>
     public async Task ExecuteAsync(T? parameter)
     {
         if (!CanExecute(parameter))
@@ -142,9 +128,7 @@ public sealed class AsyncRelayCommand<T> : ObservableObject, ICommand
         }
     }
 
-    /// <summary>
     /// 실행 가능 여부를 다시 평가하도록 알린다.
-    /// </summary>
     public void RaiseCanExecuteChanged() => CanExecuteChanged?.Invoke(this, EventArgs.Empty);
 
     private static T? Convert(object? parameter) => parameter is T value ? value : default;

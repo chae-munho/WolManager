@@ -5,9 +5,7 @@ using WolManager.Validation;
 
 namespace WolManager.ViewModels;
 
-/// <summary>
 /// 편집 영역 ViewModel. PC를 직접 추가, 수정, 삭제한다.
-/// </summary>
 public sealed class EditorViewModel : ObservableObject
 {
     private readonly IPcRepository _repository;
@@ -31,7 +29,7 @@ public sealed class EditorViewModel : ObservableObject
         _deleteCommand = new RelayCommand(Delete, () => EditingPc is not null);
     }
 
-    /// <summary>수정/삭제할 PC. 없으면 새로 입력하는 상태</summary>
+    /// 수정/삭제할 PC. 없으면 새로 입력하는 상태
     public PcEntry? EditingPc
     {
         get => _editingPc;
@@ -71,9 +69,7 @@ public sealed class EditorViewModel : ObservableObject
 
     public RelayCommand DeleteCommand => _deleteCommand;
 
-    /// <summary>
     /// 편집할 PC를 정하고 입력칸을 채운다. null이면 입력칸을 비운다.
-    /// </summary>
     public void Edit(PcEntry? pc)
     {
         EditingPc = pc;

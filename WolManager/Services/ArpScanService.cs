@@ -6,9 +6,7 @@ using WolManager.Native;
 
 namespace WolManager.Services;
 
-/// <summary>
 /// Win32 SendARP로 스캔하는 구현. 방화벽이 Ping을 막아도 ARP에는 응답한다.
-/// </summary>
 public sealed class ArpScanService : IArpScanService
 {
     private const int MacLength = 6;
@@ -20,10 +18,8 @@ public sealed class ArpScanService : IArpScanService
         _network = network;
     }
 
-    /// <summary>
     /// 대역 전체에 ARP 요청을 보내 응답한 장비의 IP, MAC, 호스트명을 모은다.
     /// 마스크가 /22보다 넓으면 마스터 PC IP가 속한 /24만 스캔하고, 마스터 PC 자신과 게이트웨이는 제외한다.
-    /// </summary>
     public async Task<IReadOnlyList<ScanResult>> ScanAsync(
         SubnetInfo subnet, IProgress<ScanProgress>? progress, CancellationToken cancellationToken = default)
     {
