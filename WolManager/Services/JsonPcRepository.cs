@@ -1,5 +1,4 @@
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.IO;
 using System.Text.Encodings.Web;
 using System.Text.Json;
@@ -36,10 +35,6 @@ public sealed class JsonPcRepository : IPcRepository
     /// 저장 파일에서 목록을 불러온다. 파일이 없거나 깨져 있으면 빈 목록으로 시작한다.
     public void Load()
     {
-        foreach (var item in _items)
-        {
-            item.PropertyChanged -= OnItemPropertyChanged;
-        }
         _items.Clear();
 
         if (!File.Exists(_filePath))
@@ -87,12 +82,11 @@ public sealed class JsonPcRepository : IPcRepository
                 _log.Write($"IP 주소 형식이 올바르지 않습니다: {name} ({ip})");
             }
 
-            Attach(new PcEntry
+            _items.Add(new PcEntry
             {
                 Name = name,
                 Mac = mac,
                 Ip = ip,
-                IsTarget = record.IsTarget ?? false,
             });
         }
 
@@ -108,7 +102,6 @@ public sealed class JsonPcRepository : IPcRepository
             Name = item.Name,
             Mac = item.Mac,
             Ip = item.Ip,
-            IsTarget = item.IsTarget,
         }).ToList();
 
         try
@@ -126,7 +119,7 @@ public sealed class JsonPcRepository : IPcRepository
     /// PC를 목록에 추가하고 저장한다.
     public void Add(PcEntry entry)
     {
-        Attach(entry);
+        _items.Add(entry);
         _log.Write($"추가: {entry.Name} ({entry.Mac})");
         Save();
     }
@@ -146,14 +139,13 @@ public sealed class JsonPcRepository : IPcRepository
     {
         if (_items.Remove(entry))
         {
-            entry.PropertyChanged -= OnItemPropertyChanged;
             _log.Write($"삭제: {entry.Name} ({entry.Mac})");
             Save();
         }
     }
 
     /// 스캔 결과를 목록에 병합하고 저장한다.
-    /// MAC이 같으면 IP 갱신, MAC은 다르고 IP가 같으면 MAC 갱신, 둘 다 없으면 신규 등록(대상 체크 안 함)한다.
+    /// MAC이 같으면 IP 갱신, MAC은 다르고 IP가 같으면 MAC 갱신, 둘 다 없으면 신규 등록한다.
     /// 응답한 PC는 켜짐으로 표시한다.
     public MergeSummary MergeScanResults(IReadOnlyList<ScanResult> results)
     {
@@ -190,7 +182,7 @@ public sealed class JsonPcRepository : IPcRepository
             else
             {
                 entry = new PcEntry { Name = result.HostName, Mac = result.Mac, Ip = result.Ip };
-                Attach(entry);
+                _items.Add(entry);
                 _log.Write($"신규 등록: {entry.Name} ({entry.Mac}, {entry.Ip})");
                 added++;
             }
@@ -204,26 +196,6 @@ public sealed class JsonPcRepository : IPcRepository
     }
 
     private static string DisplayIp(string ip) => ip.Length == 0 ? "없음" : ip;
-
-    private void Attach(PcEntry entry)
-    {
-        entry.PropertyChanged += OnItemPropertyChanged;
-        _items.Add(entry);
-    }
-
-    // 목록의 대상 체크를 바꾸면 바로 저장한다.
-    private void OnItemPropertyChanged(object? sender, PropertyChangedEventArgs e)
-    {
-        if (sender is not PcEntry entry || e.PropertyName != nameof(PcEntry.IsTarget))
-        {
-            return;
-        }
-
-        _log.Write(entry.IsTarget
-            ? $"전체 깨우기 대상에 포함: {entry.Name}"
-            : $"전체 깨우기 대상에서 제외: {entry.Name}");
-        Save();
-    }
 
     // 깨진 파일을 다음 저장이 덮어쓰지 않도록 옮겨 둔다.
     private void BackupBrokenFile()

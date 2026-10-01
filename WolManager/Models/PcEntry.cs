@@ -8,7 +8,6 @@ public sealed class PcEntry : ObservableObject
     private string _name = string.Empty;
     private string _mac = string.Empty;
     private string _ip = string.Empty;
-    private bool _isTarget;
     private PcStatus _status = PcStatus.Unknown;
     private DateTime? _wakeRequestedAt;
 
@@ -30,13 +29,6 @@ public sealed class PcEntry : ObservableObject
     {
         get => _ip;
         set => SetProperty(ref _ip, value);
-    }
-
-    /// 전체 깨우기 대상 여부
-    public bool IsTarget
-    {
-        get => _isTarget;
-        set => SetProperty(ref _isTarget, value);
     }
 
     /// 현재 상태 (저장하지 않음)

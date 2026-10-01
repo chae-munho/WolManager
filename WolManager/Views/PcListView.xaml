@@ -1,7 +1,8 @@
 <UserControl x:Class="WolManager.Views.PcListView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:controls="clr-namespace:WolManager.Controls">
+             xmlns:controls="clr-namespace:WolManager.Controls"
+             xmlns:behaviors="clr-namespace:WolManager.Behaviors">
     <Border Style="{StaticResource CardStyle}">
         <DockPanel>
             <!-- 제목과 버튼 -->
@@ -16,19 +17,9 @@
             <Grid>
                 <DataGrid ItemsSource="{Binding Items}"
                           SelectedItem="{Binding SelectedPc}"
-                          Style="{StaticResource PcGridStyle}">
+                          Style="{StaticResource PcGridStyle}"
+                          behaviors:DataGridSelectAllBehavior.IsAllSelected="{Binding IsAllSelected}">
                     <DataGrid.Columns>
-                        <DataGridTemplateColumn Header="대상" Width="56">
-                            <DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate>
-                                    <CheckBox HorizontalAlignment="Center"
-                                              VerticalAlignment="Center"
-                                              IsChecked="{Binding IsTarget, UpdateSourceTrigger=PropertyChanged}"
-                                              ToolTip="전체 깨우기에 포함" />
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn>
-
                         <DataGridTemplateColumn Header="상태" Width="110">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>

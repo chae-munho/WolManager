@@ -16,6 +16,7 @@ public sealed class PcListViewModel : ObservableObject
     private readonly IDialogService _dialog;
     private readonly ILogService _log;
     private PcEntry? _selectedPc;
+    private bool _isAllSelected;
 
     public PcListViewModel(
         IPcRepository repository,
@@ -55,39 +56,54 @@ public sealed class PcListViewModel : ObservableObject
         set => SetProperty(ref _selectedPc, value);
     }
 
+    /// 전체 깨우기 확인 중에 목록 전체 행을 선택해 보여 준다.
+    public bool IsAllSelected
+    {
+        get => _isAllSelected;
+        private set => SetProperty(ref _isAllSelected, value);
+    }
+
     /// 상태를 지금 바로 다시 확인한다.
     public AsyncRelayCommand RefreshCommand { get; }
 
     /// 행의 깨우기 버튼. 파라미터로 PC를 받는다.
     public AsyncRelayCommand<PcEntry> WakeCommand { get; }
 
-    /// 대상으로 체크된 PC 중 켜져 있지 않은 PC를 모두 깨운다.
+    /// 목록 전체를 선택해 보여 주고, 확인을 받은 뒤 켜져 있지 않은 PC를 모두 깨운다.
     public AsyncRelayCommand WakeAllCommand { get; }
 
     private async Task WakeAllAsync()
     {
-        var targets = Items.Where(pc => pc.IsTarget).ToList();
-        if (targets.Count == 0)
-        {
-            // 대상 체크는 기본이 꺼져 있으므로, 처음 쓰는 사용자가 다음에 할 일을 알 수 있게 안내한다.
-            const string message = "전체 깨우기 대상으로 체크된 PC가 없습니다. 깨울 PC의 '대상' 칸을 체크하세요.";
-            _log.Write(message);
-            _dialog.ShowWarning(message);
-            return;
-        }
-
-        var toWake = targets.Where(pc => pc.Status != PcStatus.On).ToList();
-        var skipped = targets.Count - toWake.Count;
+        var toWake = Items.Where(pc => pc.Status != PcStatus.On).ToList();
+        var skipped = Items.Count - toWake.Count;
         if (toWake.Count == 0)
         {
-            _log.Write("대상 PC가 모두 켜져 있습니다.");
+            const string allOn = "모든 PC가 켜져 있습니다.";
+            _log.Write(allOn);
+            _dialog.ShowWarning(allOn);
             return;
         }
 
-        _log.Write(skipped > 0
-            ? $"전체 깨우기: {toWake.Count}대에 신호를 보냅니다. (켜져 있는 {skipped}대 제외)"
-            : $"전체 깨우기: {toWake.Count}대에 신호를 보냅니다.");
-        await WakeAsync(toWake);
+        IsAllSelected = true;
+        try
+        {
+            var question = skipped > 0
+                ? $"PC {Items.Count}대 중 켜져 있지 않은 {toWake.Count}대를 깨울까요?\n(켜져 있는 {skipped}대는 제외)"
+                : $"PC {toWake.Count}대를 모두 깨울까요?";
+            if (!_dialog.Confirm(question))
+            {
+                return;
+            }
+
+            _log.Write(skipped > 0
+                ? $"전체 깨우기: {toWake.Count}대에 신호를 보냅니다. (켜져 있는 {skipped}대 제외)"
+                : $"전체 깨우기: {toWake.Count}대에 신호를 보냅니다.");
+            await WakeAsync(toWake);
+        }
+        finally
+        {
+            IsAllSelected = false;
+        }
     }
 
     private async Task WakeAsync(IReadOnlyList<PcEntry> pcs)

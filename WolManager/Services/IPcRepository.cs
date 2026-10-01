@@ -4,7 +4,7 @@ using WolManager.Models;
 namespace WolManager.Services;
 
 /// PC 목록을 단독으로 소유하고 저장하는 서비스. 목록 변경은 모두 이 서비스를 거친다.
-/// 목록 항목의 대상 체크 변경은 서비스가 감지해 바로 저장한다. UI 스레드에서만 호출한다.
+/// UI 스레드에서만 호출한다.
 public interface IPcRepository
 {
     /// PC 목록.
@@ -27,7 +27,7 @@ public interface IPcRepository
     void Remove(PcEntry entry);
 
     /// 스캔 결과를 목록에 병합하고 저장한다.
-    /// MAC이 같으면 IP 갱신, MAC은 다르고 IP가 같으면 MAC 갱신, 둘 다 없으면 신규 등록(대상 체크 안 함)한다.
+    /// MAC이 같으면 IP 갱신, MAC은 다르고 IP가 같으면 MAC 갱신, 둘 다 없으면 신규 등록한다.
     /// 응답한 PC는 켜짐으로 표시한다.
     MergeSummary MergeScanResults(IReadOnlyList<ScanResult> results);
 }
