@@ -13,6 +13,7 @@
     <sys:Double x:Key="DefaultFontSize">13</sys:Double>
     <sys:Double x:Key="TitleFontSize">15</sys:Double>
 
+
     <!-- 창 -->
     <Style x:Key="AppWindowStyle" TargetType="Window">
         <Setter Property="Background" Value="{StaticResource BackgroundBrush}" />
@@ -185,76 +186,57 @@
         <Setter Property="Padding" Value="12,3" />
     </Style>
 
-    <!-- PC 목록 표 -->
-    <Style x:Key="GridCellTextStyle" TargetType="TextBlock">
-        <Setter Property="VerticalAlignment" Value="Center" />
-        <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+    <!-- PC 카드 목록 -->
+    <Style x:Key="PcTileListStyle" TargetType="ListBox">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled" />
+        <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Disabled" />
     </Style>
 
-    <Style x:Key="GridMonoCellTextStyle" TargetType="TextBlock" BasedOn="{StaticResource GridCellTextStyle}">
-        <Setter Property="FontFamily" Value="{StaticResource MonoFont}" />
-    </Style>
-
-    <Style x:Key="PcGridColumnHeaderStyle" TargetType="DataGridColumnHeader">
-        <Setter Property="Background" Value="{StaticResource CardBrush}" />
-        <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}" />
-        <Setter Property="BorderBrush" Value="{StaticResource LineBrush}" />
-        <Setter Property="BorderThickness" Value="0,0,0,1" />
-        <Setter Property="Padding" Value="8,0,8,8" />
-        <Setter Property="HorizontalContentAlignment" Value="Left" />
-    </Style>
-
-    <Style x:Key="PcGridRowStyle" TargetType="DataGridRow">
-        <Setter Property="Background" Value="{StaticResource CardBrush}" />
-        <Style.Triggers>
-            <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Background" Value="{StaticResource RowHoverBrush}" />
-            </Trigger>
-            <Trigger Property="IsSelected" Value="True">
-                <Setter Property="Background" Value="{StaticResource RowSelectedBrush}" />
-            </Trigger>
-        </Style.Triggers>
-    </Style>
-
-    <Style x:Key="PcGridCellStyle" TargetType="DataGridCell">
-        <Setter Property="Padding" Value="8,0" />
+    <Style x:Key="PcTileItemStyle" TargetType="ListBoxItem">
+        <Setter Property="Margin" Value="4" />
+        <Setter Property="Padding" Value="6" />
+        <Setter Property="Cursor" Value="Hand" />
         <Setter Property="FocusVisualStyle" Value="{x:Null}" />
         <Setter Property="Template">
             <Setter.Value>
-                <ControlTemplate TargetType="DataGridCell">
-                    <Border Background="Transparent" Padding="{TemplateBinding Padding}">
-                        <ContentPresenter VerticalAlignment="Center" />
+                <ControlTemplate TargetType="ListBoxItem">
+                    <Border x:Name="Bd"
+                            Background="{StaticResource CardBrush}"
+                            BorderBrush="{StaticResource LineBrush}"
+                            BorderThickness="1"
+                            CornerRadius="6"
+                            Padding="{TemplateBinding Padding}"
+                            SnapsToDevicePixels="True">
+                        <ContentPresenter />
                     </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Bd" Property="Background" Value="{StaticResource RowHoverBrush}" />
+                        </Trigger>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter TargetName="Bd" Property="Background" Value="{StaticResource RowSelectedBrush}" />
+                            <Setter TargetName="Bd" Property="BorderBrush" Value="{StaticResource AccentBrush}" />
+                            <Setter TargetName="Bd" Property="BorderThickness" Value="2" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
-        <Style.Triggers>
-            <Trigger Property="IsSelected" Value="True">
-                <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}" />
-            </Trigger>
-        </Style.Triggers>
     </Style>
 
-    <Style x:Key="PcGridStyle" TargetType="DataGrid">
-        <Setter Property="AutoGenerateColumns" Value="False" />
-        <Setter Property="IsReadOnly" Value="True" />
-        <Setter Property="CanUserAddRows" Value="False" />
-        <Setter Property="CanUserDeleteRows" Value="False" />
-        <Setter Property="CanUserReorderColumns" Value="False" />
-        <Setter Property="CanUserResizeRows" Value="False" />
-        <Setter Property="CanUserSortColumns" Value="False" />
-        <Setter Property="SelectionMode" Value="Single" />
-        <Setter Property="SelectionUnit" Value="FullRow" />
-        <Setter Property="HeadersVisibility" Value="Column" />
-        <Setter Property="GridLinesVisibility" Value="Horizontal" />
-        <Setter Property="HorizontalGridLinesBrush" Value="{StaticResource LineBrush}" />
-        <Setter Property="Background" Value="{StaticResource CardBrush}" />
-        <Setter Property="RowBackground" Value="{StaticResource CardBrush}" />
-        <Setter Property="BorderThickness" Value="0" />
-        <Setter Property="RowHeight" Value="38" />
-        <Setter Property="ColumnHeaderStyle" Value="{StaticResource PcGridColumnHeaderStyle}" />
-        <Setter Property="RowStyle" Value="{StaticResource PcGridRowStyle}" />
-        <Setter Property="CellStyle" Value="{StaticResource PcGridCellStyle}" />
+    <Style x:Key="TileNameTextStyle" TargetType="TextBlock">
+        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+    </Style>
+
+    <Style x:Key="TileIpTextStyle" TargetType="TextBlock" BasedOn="{StaticResource MonoTextStyle}">
+        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="FontSize" Value="11" />
+        <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}" />
     </Style>
 
     <!-- 제목 표시줄 버튼 -->

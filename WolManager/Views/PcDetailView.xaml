@@ -1,0 +1,55 @@
+<UserControl x:Class="WolManager.Views.PcDetailView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:controls="clr-namespace:WolManager.Controls">
+    <Border Style="{StaticResource CardStyle}">
+        <Grid>
+            <!-- PC를 선택하지 않았을 때 -->
+            <TextBlock HorizontalAlignment="Center"
+                       VerticalAlignment="Center"
+                       TextAlignment="Center"
+                       TextWrapping="Wrap"
+                       Text="목록에서 PC를 선택하세요.">
+                <TextBlock.Style>
+                    <Style TargetType="TextBlock" BasedOn="{StaticResource HintTextStyle}">
+                        <Setter Property="Visibility" Value="Visible" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding HasPc}" Value="True">
+                                <Setter Property="Visibility" Value="Collapsed" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </TextBlock.Style>
+            </TextBlock>
+
+            <!-- 선택한 PC -->
+            <StackPanel Visibility="{Binding HasPc, Converter={StaticResource BoolToVisibility}}">
+                <TextBlock Style="{StaticResource HintTextStyle}" Text="선택한 PC" />
+                <TextBlock Margin="0,2,0,4" Style="{StaticResource SectionTitleTextStyle}"
+                           Text="{Binding Pc.Name}" TextTrimming="CharacterEllipsis" />
+                <controls:StatusIndicator Margin="0,0,0,14" HorizontalAlignment="Left" Status="{Binding Pc.Status}" />
+
+                <UniformGrid Columns="2" Margin="0,0,0,16">
+                    <Button Content="깨우기" Margin="0,0,4,0" Command="{Binding WakeCommand}" />
+                    <Button Content="끄기" Margin="4,0,0,0" Command="{Binding ShutdownCommand}" />
+                </UniformGrid>
+
+                <TextBlock Style="{StaticResource FieldLabelTextStyle}" Text="이름" />
+                <TextBox Margin="0,0,0,10" Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" />
+
+                <TextBlock Style="{StaticResource FieldLabelTextStyle}" Text="MAC" />
+                <TextBox Margin="0,0,0,10" Style="{StaticResource MonoTextBoxStyle}"
+                         Text="{Binding Mac, UpdateSourceTrigger=PropertyChanged}" />
+
+                <TextBlock Style="{StaticResource FieldLabelTextStyle}" Text="IP (모르면 비워 두기)" />
+                <TextBox Margin="0,0,0,14" Style="{StaticResource MonoTextBoxStyle}"
+                         Text="{Binding Ip, UpdateSourceTrigger=PropertyChanged}" />
+
+                <UniformGrid Columns="2">
+                    <Button Content="수정" Margin="0,0,4,0" Command="{Binding UpdateCommand}" />
+                    <Button Content="삭제" Margin="4,0,0,0" Command="{Binding DeleteCommand}" />
+                </UniformGrid>
+            </StackPanel>
+        </Grid>
+    </Border>
+</UserControl>

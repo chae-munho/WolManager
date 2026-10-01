@@ -6,6 +6,9 @@ public static class Constants
     /// 화면에 남기는 로그 최대 줄 수
     public const int LogMaxLines = 500;
 
+    /// PC 카드 격자의 가로:세로 줄 수 비율. 1.6이면 25대일 때 7개씩 4줄
+    public const double TileGridAspectRatio = 1.6;
+
     /// PC 목록 저장 파일 이름 (실행 파일 폴더)
     public const string PcFileName = "pcs.json";
 

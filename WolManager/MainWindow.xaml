@@ -5,10 +5,10 @@
         xmlns:controls="clr-namespace:WolManager.Controls"
         xmlns:views="clr-namespace:WolManager.Views"
         Title="PC 원격 켜기"
-        Width="920"
-        Height="720"
-        MinWidth="720"
-        MinHeight="560"
+        Width="1180"
+        Height="780"
+        MinWidth="900"
+        MinHeight="600"
         WindowStartupLocation="CenterScreen"
         Style="{StaticResource AppWindowStyle}"
         behaviors:WindowDragBehavior.IsEnabled="True">
@@ -17,25 +17,33 @@
         <DockPanel>
             <controls:TitleBar DockPanel.Dock="Top" />
 
-            <Grid Margin="16">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="*" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="160" />
-                </Grid.RowDefinitions>
+            <Grid>
+                <Grid Margin="16">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="110" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="290" />
+                    </Grid.ColumnDefinitions>
 
-                <!-- 스캔 영역 -->
-                <views:ScanView Grid.Row="0" DataContext="{Binding Scan}" />
+                    <!-- 스캔 영역 -->
+                    <views:ScanView Grid.Row="0" Grid.ColumnSpan="2" DataContext="{Binding Scan}" />
 
-                <!-- PC 목록 영역 -->
-                <views:PcListView Grid.Row="1" Margin="0,12,0,0" DataContext="{Binding PcList}" />
+                    <!-- PC 목록(카드) 영역 -->
+                    <views:PcListView Grid.Row="1" Grid.Column="0" Margin="0,12,0,0" DataContext="{Binding PcList}" />
 
-                <!-- 편집 영역 -->
-                <views:EditorView Grid.Row="2" Margin="0,12,0,0" DataContext="{Binding Editor}" />
+                    <!-- 선택한 PC 영역 -->
+                    <views:PcDetailView Grid.Row="1" Grid.Column="1" Margin="12,12,0,0" DataContext="{Binding Detail}" />
 
-                <!-- 로그 영역 -->
-                <views:LogView Grid.Row="3" Margin="0,12,0,0" DataContext="{Binding Log}" />
+                    <!-- 로그 영역 -->
+                    <views:LogView Grid.Row="2" Grid.ColumnSpan="2" Margin="0,12,0,0" DataContext="{Binding Log}" />
+                </Grid>
+
+                <!-- 새 PC 추가 창 (열렸을 때만 화면 전체를 덮는다) -->
+                <views:AddPcView DataContext="{Binding AddPc}" />
             </Grid>
         </DockPanel>
     </Border>

@@ -25,6 +25,9 @@
     <SolidColorBrush x:Key="RowHoverBrush" Color="#F7F7F5" />
     <SolidColorBrush x:Key="RowSelectedBrush" Color="#E6EEEE" />
 
+    <!-- 추가 창 뒤를 흐리게 덮는 색 -->
+    <SolidColorBrush x:Key="OverlayBrush" Color="#99F5F5F4" />
+
     <!-- 제목 표시줄 닫기 버튼 -->
     <SolidColorBrush x:Key="CloseHoverBrush" Color="#C4453C" />
     <SolidColorBrush x:Key="ClosePressedBrush" Color="#A83A32" />

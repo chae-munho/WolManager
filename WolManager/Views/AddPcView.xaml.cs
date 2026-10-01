@@ -2,9 +2,9 @@ using System.Windows.Controls;
 
 namespace WolManager.Views;
 
-public partial class EditorView : UserControl
+public partial class AddPcView : UserControl
 {
-    public EditorView()
+    public AddPcView()
     {
         InitializeComponent();
     }
