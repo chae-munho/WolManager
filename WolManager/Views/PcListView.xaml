@@ -35,13 +35,20 @@
                         <DataGridTextColumn Header="IP" Width="140" Binding="{Binding Ip}"
                                             ElementStyle="{StaticResource GridMonoCellTextStyle}" />
 
-                        <DataGridTemplateColumn Width="90">
+                        <DataGridTemplateColumn Width="160">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
-                                    <Button Content="깨우기"
-                                            Style="{StaticResource SmallButtonStyle}"
-                                            Command="{Binding DataContext.WakeCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                            CommandParameter="{Binding}" />
+                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                                        <Button Content="깨우기"
+                                                Style="{StaticResource SmallButtonStyle}"
+                                                Command="{Binding DataContext.WakeCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                CommandParameter="{Binding}" />
+                                        <Button Content="끄기"
+                                                Margin="6,0,0,0"
+                                                Style="{StaticResource SmallButtonStyle}"
+                                                Command="{Binding DataContext.ShutdownCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                CommandParameter="{Binding}" />
+                                    </StackPanel>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>

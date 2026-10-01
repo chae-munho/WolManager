@@ -13,6 +13,7 @@ public sealed class PcListViewModel : ObservableObject
         "같은 네트워크에 연결되어 있지 않습니다. 유선 또는 같은 공유기의 Wi-Fi에 연결했는지 확인하세요.";
 
     private readonly IWakeOnLanService _wakeOnLan;
+    private readonly IShutdownService _shutdown;
     private readonly IDialogService _dialog;
     private readonly ILogService _log;
     private PcEntry? _selectedPc;
@@ -21,11 +22,13 @@ public sealed class PcListViewModel : ObservableObject
     public PcListViewModel(
         IPcRepository repository,
         IWakeOnLanService wakeOnLan,
+        IShutdownService shutdown,
         IStatusMonitorService statusMonitor,
         IDialogService dialog,
         ILogService log)
     {
         _wakeOnLan = wakeOnLan;
+        _shutdown = shutdown;
         _dialog = dialog;
         _log = log;
         Items = repository.Items;
@@ -43,6 +46,10 @@ public sealed class PcListViewModel : ObservableObject
             pc => pc is not null,
             OnError);
         WakeAllCommand = new AsyncRelayCommand(WakeAllAsync, () => Items.Count > 0, OnError);
+        ShutdownCommand = new AsyncRelayCommand<PcEntry>(
+            pc => pc is null ? Task.CompletedTask : ShutdownAsync(pc),
+            pc => pc is not null,
+            ex => _log.Write($"끄기 중 오류가 발생했습니다. ({ex.Message})"));
 
         ((INotifyCollectionChanged)Items).CollectionChanged += (_, _) => WakeAllCommand.RaiseCanExecuteChanged();
     }
@@ -72,9 +79,38 @@ public sealed class PcListViewModel : ObservableObject
     /// 목록 전체를 선택해 보여 주고, 확인을 받은 뒤 켜져 있지 않은 PC를 모두 깨운다.
     public AsyncRelayCommand WakeAllCommand { get; }
 
+    /// 행의 끄기 버튼. 확인을 받은 뒤 그 PC에 원격 종료를 요청한다.
+    public AsyncRelayCommand<PcEntry> ShutdownCommand { get; }
+
+    private async Task ShutdownAsync(PcEntry pc)
+    {
+        var question = Constants.ShutdownForceAppsClosed
+            ? $"'{pc.Name}' PC를 끌까요?\n실행 중인 프로그램은 저장 없이 강제로 닫힙니다."
+            : $"'{pc.Name}' PC를 끌까요?";
+        if (!_dialog.Confirm(question))
+        {
+            return;
+        }
+
+        _log.Write($"끄기 요청: {pc.Name} ({pc.Ip})");
+        var result = await _shutdown.ShutdownAsync(pc.Ip);
+        if (!result.Succeeded)
+        {
+            _log.Write($"끄기 실패: {pc.Name} - {result.Message}");
+            _dialog.ShowWarning($"'{pc.Name}'을(를) 끄지 못했습니다.\n{result.Message}");
+            return;
+        }
+
+        pc.WakeRequestedAt = null;
+        pc.ShutdownRequestedAt = DateTime.Now;
+        pc.Status = PcStatus.ShuttingDown;
+        _log.Write($"끄기 명령을 보냈습니다: {pc.Name}");
+    }
+
     private async Task WakeAllAsync()
     {
-        var toWake = Items.Where(pc => pc.Status != PcStatus.On).ToList();
+        // 켜져 있거나 꺼지는 중인 PC는 빼고 깨운다.
+        var toWake = Items.Where(pc => pc.Status is not (PcStatus.On or PcStatus.ShuttingDown)).ToList();
         var skipped = Items.Count - toWake.Count;
         if (toWake.Count == 0)
         {
@@ -128,6 +164,7 @@ public sealed class PcListViewModel : ObservableObject
 
             pc.Status = PcStatus.Waking;
             pc.WakeRequestedAt = DateTime.Now;
+            pc.ShutdownRequestedAt = null;
             _log.Write($"깨우기 신호를 보냈습니다: {pc.Name} (연결: {string.Join(", ", result.SentVia)})");
             if (failures.Length > 0)
             {
@@ -144,6 +181,7 @@ public sealed class PcListViewModel : ObservableObject
             {
                 (PcStatus.On, "켜짐"),
                 (PcStatus.Waking, "깨우는 중"),
+                (PcStatus.ShuttingDown, "끄는 중"),
                 (PcStatus.Off, "응답 없음"),
                 (PcStatus.Unknown, "알 수 없음"),
             }

@@ -23,6 +23,7 @@ public partial class App : Application
         INetworkInterfaceService networkService = new NetworkInterfaceService();
         IWakeOnLanService wakeOnLanService = new WakeOnLanService(networkService);
         IArpScanService arpScanService = new ArpScanService(networkService);
+        IShutdownService shutdownService = new RemoteShutdownService();
         _statusMonitor = new StatusMonitorService(pcRepository, arpScanService, networkService, logService);
 
         // 스캔 영역이 등록된 PC로 기본 대역을 고를 수 있도록 ViewModel보다 먼저 불러온다.
@@ -31,7 +32,7 @@ public partial class App : Application
         // ViewModel
         var mainViewModel = new MainViewModel(
             new ScanViewModel(pcRepository, arpScanService, networkService, logService),
-            new PcListViewModel(pcRepository, wakeOnLanService, _statusMonitor, dialogService, logService),
+            new PcListViewModel(pcRepository, wakeOnLanService, shutdownService, _statusMonitor, dialogService, logService),
             new EditorViewModel(pcRepository, dialogService),
             new LogViewModel(logService));
 

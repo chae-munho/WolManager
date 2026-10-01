@@ -16,6 +16,9 @@
                 <DataTrigger Binding="{Binding Status, ElementName=Root}" Value="{x:Static models:PcStatus.Off}">
                     <Setter Property="Fill" Value="{StaticResource StatusOffBrush}" />
                 </DataTrigger>
+                <DataTrigger Binding="{Binding Status, ElementName=Root}" Value="{x:Static models:PcStatus.ShuttingDown}">
+                    <Setter Property="Fill" Value="{StaticResource StatusWakingBrush}" />
+                </DataTrigger>
             </Style.Triggers>
         </Style>
 
@@ -30,6 +33,9 @@
                 </DataTrigger>
                 <DataTrigger Binding="{Binding Status, ElementName=Root}" Value="{x:Static models:PcStatus.Off}">
                     <Setter Property="Text" Value="응답 없음" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Status, ElementName=Root}" Value="{x:Static models:PcStatus.ShuttingDown}">
+                    <Setter Property="Text" Value="끄는 중" />
                 </DataTrigger>
             </Style.Triggers>
         </Style>

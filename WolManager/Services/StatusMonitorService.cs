@@ -204,6 +204,19 @@ public sealed class StatusMonitorService : IStatusMonitorService
 
         if (reply == true)
         {
+            // 끄기 요청 후 아직 응답이 있으면 종료가 진행 중이므로 끄는 중을 유지한다.
+            if (pc.ShutdownRequestedAt is { } shutdownAt)
+            {
+                if (now - shutdownAt < Constants.ShuttingDownDuration)
+                {
+                    pc.Status = PcStatus.ShuttingDown;
+                    return;
+                }
+
+                pc.ShutdownRequestedAt = null;
+                _log.Write($"끄기 요청 후 {Constants.ShuttingDownDuration.TotalMinutes:0}분이 지나도 켜져 있음: {pc.Name}");
+            }
+
             if (pc.Status == PcStatus.Waking)
             {
                 _log.Write($"켜짐 확인: {pc.Name}");
@@ -212,6 +225,12 @@ public sealed class StatusMonitorService : IStatusMonitorService
             pc.Status = PcStatus.On;
             pc.WakeRequestedAt = null;
             return;
+        }
+
+        if (pc.ShutdownRequestedAt is not null)
+        {
+            pc.ShutdownRequestedAt = null;
+            _log.Write($"꺼짐 확인: {pc.Name}");
         }
 
         if (pc.WakeRequestedAt is { } requestedAt)

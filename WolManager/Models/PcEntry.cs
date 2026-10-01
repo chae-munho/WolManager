@@ -10,6 +10,7 @@ public sealed class PcEntry : ObservableObject
     private string _ip = string.Empty;
     private PcStatus _status = PcStatus.Unknown;
     private DateTime? _wakeRequestedAt;
+    private DateTime? _shutdownRequestedAt;
 
     public string Name
     {
@@ -43,5 +44,12 @@ public sealed class PcEntry : ObservableObject
     {
         get => _wakeRequestedAt;
         set => SetProperty(ref _wakeRequestedAt, value);
+    }
+
+    /// 마지막 끄기 요청 시각 (저장하지 않음)
+    public DateTime? ShutdownRequestedAt
+    {
+        get => _shutdownRequestedAt;
+        set => SetProperty(ref _shutdownRequestedAt, value);
     }
 }

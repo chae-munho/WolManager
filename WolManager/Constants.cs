@@ -33,6 +33,18 @@ public static class Constants
     /// 깨우기 요청 후 "깨우는 중"으로 유지하는 시간
     public static readonly TimeSpan WakingDuration = TimeSpan.FromMinutes(3);
 
+    /// 끄기 요청 후 "끄는 중"으로 유지하는 시간
+    public static readonly TimeSpan ShuttingDownDuration = TimeSpan.FromMinutes(3);
+
+    /// 원격 끄기에 쓰는 대상 PC 계정 (빈 비밀번호)
+    public const string ShutdownAccountName = "USER";
+
+    /// 원격 끄기 때 실행 중인 프로그램을 기다리지 않고 강제로 닫는다 (모니터 없는 PC는 저장 확인 창을 누를 사람이 없다)
+    public const bool ShutdownForceAppsClosed = true;
+
+    /// 원격 끄기 연결과 요청 전체의 타임아웃
+    public static readonly TimeSpan ShutdownRequestTimeout = TimeSpan.FromSeconds(15);
+
     /// IP 없이 MAC만 등록된 PC를 백그라운드 ARP 스캔으로 찾는 주기
     public static readonly TimeSpan MacLookupInterval = TimeSpan.FromSeconds(30);
 

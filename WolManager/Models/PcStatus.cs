@@ -14,4 +14,7 @@ public enum PcStatus
 
     /// Ping 응답 없음 또는 MAC으로 찾지 못함 (화면에는 "응답 없음")
     Off,
+
+    /// 끄기 요청 후 응답이 사라지기를 기다리는 중
+    ShuttingDown,
 }
