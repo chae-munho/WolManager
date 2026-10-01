@@ -11,7 +11,7 @@ public sealed class StatusMonitorService : IStatusMonitorService
     private readonly IPcRepository _repository;
     private readonly ILogService _log;
     private CancellationTokenSource? _cancellation;
-    private bool _isChecking;
+    private Task? _checking;
 
     public StatusMonitorService(IPcRepository repository, ILogService log)
     {
@@ -39,32 +39,29 @@ public sealed class StatusMonitorService : IStatusMonitorService
         _cancellation = null;
     }
 
-    /// 지금 바로 한 번 확인한다. 이전 확인이 진행 중이면 건너뛴다.
-    public async Task RefreshAsync()
+    /// 지금 바로 한 번 확인한다. 이미 확인이 진행 중이면 새로 시작하지 않고 그 확인이 끝날 때까지 기다린다.
+    public Task RefreshAsync()
     {
-        if (_isChecking)
+        if (_checking is not { IsCompleted: false })
         {
-            return;
+            _checking = CheckAsync();
         }
 
-        _isChecking = true;
-        try
-        {
-            var pcs = _repository.Items.ToList();
-            var replies = await Task.WhenAll(pcs.Select(pc => PingAsync(pc.Ip)));
-            var now = DateTime.Now;
-            for (var i = 0; i < pcs.Count; i++)
-            {
-                Apply(pcs[i], replies[i], now);
-            }
-        }
-        finally
-        {
-            _isChecking = false;
-        }
+        return _checking;
     }
 
     public void Dispose() => Stop();
+
+    private async Task CheckAsync()
+    {
+        var pcs = _repository.Items.ToList();
+        var replies = await Task.WhenAll(pcs.Select(pc => PingAsync(pc.Ip)));
+        var now = DateTime.Now;
+        for (var i = 0; i < pcs.Count; i++)
+        {
+            Apply(pcs[i], replies[i], now);
+        }
+    }
 
     private async Task RunAsync(CancellationToken cancellationToken)
     {
@@ -73,6 +70,12 @@ public sealed class StatusMonitorService : IStatusMonitorService
         {
             do
             {
+                // 이전 확인(새로고침 포함)이 아직 진행 중이면 이번 주기는 건너뛴다.
+                if (_checking is { IsCompleted: false })
+                {
+                    continue;
+                }
+
                 try
                 {
                     await RefreshAsync();

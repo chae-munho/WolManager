@@ -30,7 +30,11 @@ public sealed class PcListViewModel : ObservableObject
         Items = repository.Items;
 
         RefreshCommand = new AsyncRelayCommand(
-            statusMonitor.RefreshAsync,
+            async () =>
+            {
+                await statusMonitor.RefreshAsync();
+                LogStatusSummary();
+            },
             onError: ex => _log.Write($"상태 확인 중 오류가 발생했습니다. ({ex.Message})"));
 
         WakeCommand = new AsyncRelayCommand<PcEntry>(
@@ -114,6 +118,25 @@ public sealed class PcListViewModel : ObservableObject
                 _log.Write($"일부 연결로는 보내지 못했습니다: {failures}");
             }
         }
+    }
+
+    // 새로고침이 동작했는지 알 수 있도록 결과를 한 줄로 남긴다.
+    private void LogStatusSummary()
+    {
+        var counts = Items.GroupBy(pc => pc.Status).ToDictionary(g => g.Key, g => g.Count());
+        var parts = new (PcStatus Status, string Label)[]
+            {
+                (PcStatus.On, "켜짐"),
+                (PcStatus.Waking, "깨우는 중"),
+                (PcStatus.Off, "응답 없음"),
+                (PcStatus.Unknown, "알 수 없음"),
+            }
+            .Where(p => counts.ContainsKey(p.Status))
+            .Select(p => $"{p.Label} {counts[p.Status]}대");
+
+        _log.Write(Items.Count == 0
+            ? "상태를 다시 확인했습니다. (등록된 PC 없음)"
+            : $"상태를 다시 확인했습니다. ({string.Join(", ", parts)})");
     }
 
     private void OnError(Exception ex) => _log.Write($"깨우기 중 오류가 발생했습니다. ({ex.Message})");

@@ -9,6 +9,6 @@ public interface IStatusMonitorService : IDisposable
     /// 주기적인 확인을 멈춘다.
     void Stop();
 
-    /// 지금 바로 한 번 확인한다. 이전 확인이 진행 중이면 건너뛴다.
+    /// 지금 바로 한 번 확인한다. 이미 확인이 진행 중이면 새로 시작하지 않고 그 확인이 끝날 때까지 기다린다.
     Task RefreshAsync();
 }
