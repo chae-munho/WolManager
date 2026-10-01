@@ -10,8 +10,8 @@
     <FontFamily x:Key="DefaultFont">Malgun Gothic</FontFamily>
     <FontFamily x:Key="MonoFont">Consolas, Malgun Gothic</FontFamily>
     <FontFamily x:Key="IconFont">Segoe MDL2 Assets</FontFamily>
-    <sys:Double x:Key="DefaultFontSize">13</sys:Double>
-    <sys:Double x:Key="TitleFontSize">15</sys:Double>
+    <sys:Double x:Key="DefaultFontSize">14</sys:Double>
+    <sys:Double x:Key="TitleFontSize">16</sys:Double>
 
 
     <!-- 창 -->
@@ -235,7 +235,7 @@
 
     <Style x:Key="TileIpTextStyle" TargetType="TextBlock" BasedOn="{StaticResource MonoTextStyle}">
         <Setter Property="HorizontalAlignment" Value="Center" />
-        <Setter Property="FontSize" Value="11" />
+        <Setter Property="FontSize" Value="12" />
         <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}" />
     </Style>
 
