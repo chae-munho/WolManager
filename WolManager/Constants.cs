@@ -33,7 +33,10 @@ public static class Constants
     /// 깨우기 요청 후 "깨우는 중"으로 유지하는 시간
     public static readonly TimeSpan WakingDuration = TimeSpan.FromMinutes(3);
 
-    /// ARP 스캔 동시 요청 수
+    /// IP 없이 MAC만 등록된 PC를 백그라운드 ARP 스캔으로 찾는 주기
+    public static readonly TimeSpan MacLookupInterval = TimeSpan.FromSeconds(30);
+
+    /// ARP 스캔 동시 요청 수 (여러 스캔이 겹쳐도 합쳐서 이 수를 넘지 않는다)
     public const int ArpMaxConcurrency = 32;
 
     /// ARP 요청 하나의 타임아웃 (SendARP 자체 재시도 시간보다 길게)

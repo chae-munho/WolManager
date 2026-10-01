@@ -13,6 +13,9 @@ public sealed class ArpScanService : IArpScanService
 
     private readonly INetworkInterfaceService _network;
 
+    // 사용자 스캔과 백그라운드 MAC 찾기가 겹쳐도 Wi-Fi에서 응답을 놓치지 않도록 동시 요청 수를 함께 제한한다.
+    private readonly SemaphoreSlim _gate = new(Constants.ArpMaxConcurrency);
+
     public ArpScanService(INetworkInterfaceService network)
     {
         _network = network;
@@ -23,17 +26,35 @@ public sealed class ArpScanService : IArpScanService
     public async Task<IReadOnlyList<ScanResult>> ScanAsync(
         SubnetInfo subnet, IProgress<ScanProgress>? progress, CancellationToken cancellationToken = default)
     {
+        var found = await SweepAsync(subnet, progress, cancellationToken);
+        var names = await Task.WhenAll(found.Select(item => GetHostNameAsync(item.Ip)));
+        return found.Select((item, i) => new ScanResult(item.Ip.ToString(), item.Mac, names[i])).ToList();
+    }
+
+    /// 대역 전체에 ARP 요청을 보내 주어진 MAC을 가진 장비만 돌려준다. 호스트명은 조회하지 않고 IP를 넣는다.
+    public async Task<IReadOnlyList<ScanResult>> FindMacsAsync(
+        SubnetInfo subnet, IReadOnlySet<string> macs, CancellationToken cancellationToken = default)
+    {
+        var found = await SweepAsync(subnet, null, cancellationToken);
+        return found
+            .Where(item => macs.Contains(item.Mac))
+            .Select(item => new ScanResult(item.Ip.ToString(), item.Mac, item.Ip.ToString()))
+            .ToList();
+    }
+
+    // 대역 전체에 ARP 요청을 보내 응답한 장비의 IP와 MAC을 IP 순서로 모은다.
+    private async Task<List<(IPAddress Ip, string Mac)>> SweepAsync(
+        SubnetInfo subnet, IProgress<ScanProgress>? progress, CancellationToken cancellationToken)
+    {
         var targets = GetScanTargets(subnet);
         var total = targets.Count;
         var done = 0;
         progress?.Report(new ScanProgress(0, total));
 
         var found = new ConcurrentBag<(IPAddress Ip, string Mac)>();
-        using var gate = new SemaphoreSlim(Constants.ArpMaxConcurrency);
-
         await Task.WhenAll(targets.Select(async ip =>
         {
-            await gate.WaitAsync(cancellationToken).ConfigureAwait(false);
+            await _gate.WaitAsync(cancellationToken).ConfigureAwait(false);
             try
             {
                 var mac = await ResolveMacAsync(ip, subnet.LocalAddress, cancellationToken).ConfigureAwait(false);
@@ -44,14 +65,12 @@ public sealed class ArpScanService : IArpScanService
             }
             finally
             {
-                gate.Release();
+                _gate.Release();
                 progress?.Report(new ScanProgress(Interlocked.Increment(ref done), total));
             }
         }));
 
-        var ordered = found.OrderBy(item => SubnetInfo.ToUInt32(item.Ip)).ToList();
-        var names = await Task.WhenAll(ordered.Select(item => GetHostNameAsync(item.Ip)));
-        return ordered.Select((item, i) => new ScanResult(item.Ip.ToString(), item.Mac, names[i])).ToList();
+        return found.OrderBy(item => SubnetInfo.ToUInt32(item.Ip)).ToList();
     }
 
     // 스캔할 IP 목록. 네트워크/브로드캐스트 주소, 마스터 PC 자신, 게이트웨이는 뺀다.
