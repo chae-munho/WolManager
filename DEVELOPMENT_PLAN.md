@@ -17,6 +17,7 @@ CLAUDE.md에 정해져 있지 않아 따로 정한 내용이다.
 | 로그 최대 줄 수 | 500줄, 화면에만 표시하고 파일로 남기지 않음 |
 | 저장 파일 | 실행 파일 폴더의 `pcs.json` |
 | 깨진 저장 파일 | 다음 저장이 덮어쓰지 않도록 `pcs.broken.json`으로 옮기고 빈 목록으로 시작 |
+| 대상 체크 기본값 | 스캔 신규 등록, 수동 추가, 값 없는 항목 로드 모두 체크 꺼짐. 대상이 하나도 없을 때 전체 깨우기를 누르면 체크하라는 안내 대화상자 |
 | 가상 어댑터 | VMware/VirtualBox/Hyper-V/vEthernet 어댑터 중 게이트웨이가 없는 것만 스캔 대역 목록과 깨우기 전송 NIC에서 제외 (Hyper-V 외부 스위치로 실제 망에 붙은 노트북 대비). 스캔 결과에서 자기 자신을 뺄 때는 가상 어댑터 주소까지 포함 |
 | 스캔 전 대역 재확인 | 스캔 직전에 NIC 목록을 다시 읽고, 선택한 대역이 사라졌으면 스캔하지 않고 다시 선택하도록 안내 |
 
@@ -66,7 +67,7 @@ WolManager/
 
 - `PcStatus`: `Unknown`, `On`, `Waking`, `Off`
 - `PcEntry`(ObservableObject): 이름, MAC, IP, 대상 여부, 상태, 깨우기 요청 시각
-- `PcRecord`: 저장용 DTO (이름, MAC, IP, 대상 여부 `bool?`). 로드 시 값이 없으면 대상
+- `PcRecord`: 저장용 DTO (이름, MAC, IP, 대상 여부 `bool?`). 로드 시 값이 없으면 대상 아님
 - `IPcRepository` / `JsonPcRepository`
   - `ObservableCollection<PcEntry> Items` 단일 소유
   - 로드, 추가, 수정, 삭제, 대상 변경 반영, 저장
@@ -144,7 +145,7 @@ WolManager/
 - 저장소 병합
   - MAC 일치 → IP 갱신 (IP 충돌 시 다른 항목 IP 비움)
   - MAC 불일치 + IP 일치 → MAC 갱신
-  - 둘 다 없음 → 신규, 이름은 호스트명, 대상 체크 켜짐
+  - 둘 다 없음 → 신규, 이름은 호스트명, 대상 체크 꺼짐
   - 응답한 PC는 켜짐으로 설정, 병합 직후 저장
   - 변경마다 로그, 끝나면 "n대 응답 (신규 a, 갱신 b)" 요약
 - `ScanViewModel` + `ScanView`: 대역 선택, 스캔 버튼, 진행률, 결과 문구, 첫 스캔 안내. 스캔 중 버튼과 대역 선택 비활성화

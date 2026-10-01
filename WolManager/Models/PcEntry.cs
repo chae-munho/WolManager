@@ -10,7 +10,7 @@ public sealed class PcEntry : ObservableObject
     private string _name = string.Empty;
     private string _mac = string.Empty;
     private string _ip = string.Empty;
-    private bool _isTarget = true;
+    private bool _isTarget;
     private PcStatus _status = PcStatus.Unknown;
     private DateTime? _wakeRequestedAt;
 

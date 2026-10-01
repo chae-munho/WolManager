@@ -11,6 +11,6 @@ public sealed class PcRecord
 
     public string? Ip { get; set; }
 
-    /// <summary>값이 없으면 대상으로 본다</summary>
+    /// <summary>값이 없으면 대상이 아닌 것으로 본다</summary>
     public bool? IsTarget { get; set; }
 }

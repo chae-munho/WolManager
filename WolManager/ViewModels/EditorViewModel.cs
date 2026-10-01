@@ -89,7 +89,7 @@ public sealed class EditorViewModel : ObservableObject
             return;
         }
 
-        _repository.Add(new PcEntry { Name = name, Mac = mac, Ip = ip, IsTarget = true });
+        _repository.Add(new PcEntry { Name = name, Mac = mac, Ip = ip });
         Edit(null);
     }
 

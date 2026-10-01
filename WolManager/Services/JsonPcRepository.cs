@@ -98,7 +98,7 @@ public sealed class JsonPcRepository : IPcRepository
                 Name = name,
                 Mac = mac,
                 Ip = ip,
-                IsTarget = record.IsTarget ?? true,
+                IsTarget = record.IsTarget ?? false,
             });
         }
 
@@ -168,7 +168,7 @@ public sealed class JsonPcRepository : IPcRepository
 
     /// <summary>
     /// 스캔 결과를 목록에 병합하고 저장한다.
-    /// MAC이 같으면 IP 갱신, MAC은 다르고 IP가 같으면 MAC 갱신, 둘 다 없으면 신규 등록(대상 체크)한다.
+    /// MAC이 같으면 IP 갱신, MAC은 다르고 IP가 같으면 MAC 갱신, 둘 다 없으면 신규 등록(대상 체크 안 함)한다.
     /// 응답한 PC는 켜짐으로 표시한다.
     /// </summary>
     public MergeSummary MergeScanResults(IReadOnlyList<ScanResult> results)
@@ -205,7 +205,7 @@ public sealed class JsonPcRepository : IPcRepository
             }
             else
             {
-                entry = new PcEntry { Name = result.HostName, Mac = result.Mac, Ip = result.Ip, IsTarget = true };
+                entry = new PcEntry { Name = result.HostName, Mac = result.Mac, Ip = result.Ip };
                 Attach(entry);
                 _log.Write($"신규 등록: {entry.Name} ({entry.Mac}, {entry.Ip})");
                 added++;

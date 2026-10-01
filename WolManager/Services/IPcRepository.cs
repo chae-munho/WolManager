@@ -42,7 +42,7 @@ public interface IPcRepository
 
     /// <summary>
     /// 스캔 결과를 목록에 병합하고 저장한다.
-    /// MAC이 같으면 IP 갱신, MAC은 다르고 IP가 같으면 MAC 갱신, 둘 다 없으면 신규 등록(대상 체크)한다.
+    /// MAC이 같으면 IP 갱신, MAC은 다르고 IP가 같으면 MAC 갱신, 둘 다 없으면 신규 등록(대상 체크 안 함)한다.
     /// 응답한 PC는 켜짐으로 표시한다.
     /// </summary>
     MergeSummary MergeScanResults(IReadOnlyList<ScanResult> results);

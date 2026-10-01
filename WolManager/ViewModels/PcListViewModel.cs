@@ -67,7 +67,10 @@ public sealed class PcListViewModel : ObservableObject
         var targets = Items.Where(pc => pc.IsTarget).ToList();
         if (targets.Count == 0)
         {
-            _log.Write("전체 깨우기 대상으로 체크된 PC가 없습니다.");
+            // 대상 체크는 기본이 꺼져 있으므로, 처음 쓰는 사용자가 다음에 할 일을 알 수 있게 안내한다.
+            const string message = "전체 깨우기 대상으로 체크된 PC가 없습니다. 깨울 PC의 '대상' 칸을 체크하세요.";
+            _log.Write(message);
+            _dialog.ShowWarning(message);
             return;
         }
 
