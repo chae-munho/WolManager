@@ -60,6 +60,9 @@ public static class Constants
     /// 역방향 DNS 조회 타임아웃
     public static readonly TimeSpan ReverseDnsTimeout = TimeSpan.FromSeconds(1.5);
 
+    /// NetBIOS 이름 조회 타임아웃 (DNS 조회와 동시에 한다)
+    public static readonly TimeSpan NetBiosNameTimeout = TimeSpan.FromSeconds(1.5);
+
     /// 이보다 넓은 마스크(작은 접두사)는 마스터 PC IP의 /24만 스캔한다
     public const int ScanMinPrefixLength = 22;
 

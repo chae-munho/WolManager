@@ -154,6 +154,7 @@ public sealed class JsonPcRepository : IPcRepository
 
         foreach (var result in results)
         {
+            var changed = false;
             var entry = _items.FirstOrDefault(item => item.Mac == result.Mac);
             if (entry is not null)
             {
@@ -169,7 +170,7 @@ public sealed class JsonPcRepository : IPcRepository
 
                     _log.Write($"IP 갱신: {entry.Name} ({DisplayIp(entry.Ip)} → {result.Ip})");
                     entry.Ip = result.Ip;
-                    updated++;
+                    changed = true;
                 }
             }
             else if (_items.FirstOrDefault(item => item.Ip == result.Ip) is { } sameIp)
@@ -177,7 +178,7 @@ public sealed class JsonPcRepository : IPcRepository
                 _log.Write($"MAC 갱신 (랜카드 교체로 판단): {sameIp.Name} ({sameIp.Mac} → {result.Mac})");
                 sameIp.Mac = result.Mac;
                 entry = sameIp;
-                updated++;
+                changed = true;
             }
             else
             {
@@ -185,6 +186,19 @@ public sealed class JsonPcRepository : IPcRepository
                 _items.Add(entry);
                 _log.Write($"신규 등록: {entry.Name} ({entry.Mac}, {entry.Ip})");
                 added++;
+            }
+
+            // 이름을 못 찾아 IP를 이름으로 썼던 PC는, 이번에 이름을 찾았으면 바꾼다. 사용자가 붙인 이름은 건드리지 않는다.
+            if (IsIpName(entry.Name) && !IsIpName(result.HostName) && entry.Name != result.HostName)
+            {
+                _log.Write($"이름 갱신: {entry.Name} → {result.HostName}");
+                entry.Name = result.HostName;
+                changed = true;
+            }
+
+            if (changed)
+            {
+                updated++;
             }
 
             entry.Status = PcStatus.On;
@@ -196,6 +210,9 @@ public sealed class JsonPcRepository : IPcRepository
     }
 
     private static string DisplayIp(string ip) => ip.Length == 0 ? "없음" : ip;
+
+    // 이름이 IP 주소 모양인지 (이름을 못 찾아 IP를 대신 쓴 경우)
+    private static bool IsIpName(string name) => InputValidator.TryNormalizeIp(name, out var ip) && ip.Length > 0;
 
     // 깨진 파일을 다음 저장이 덮어쓰지 않도록 옮겨 둔다.
     private void BackupBrokenFile()

@@ -135,17 +135,24 @@ public sealed class ArpScanService : IArpScanService
         }
     }
 
-    // 역방향 DNS로 호스트명을 찾고 도메인 접미사를 뗀다. 실패하거나 시간이 지나면 IP를 쓴다.
+    // 역방향 DNS와 NetBIOS로 동시에 이름을 묻는다. DNS 이름이 있으면 DNS, 없으면 NetBIOS, 둘 다 없으면 IP를 쓴다.
     private static async Task<string> GetHostNameAsync(IPAddress ip)
     {
-        var fallback = ip.ToString();
+        var dnsTask = GetDnsNameAsync(ip);
+        var netBiosTask = NetBiosNameQuery.QueryAsync(ip, Constants.NetBiosNameTimeout);
+        return await dnsTask ?? await netBiosTask ?? ip.ToString();
+    }
+
+    // 역방향 DNS로 호스트명을 찾고 도메인 접미사를 뗀다. 실패하거나 시간이 지나면 null
+    private static async Task<string?> GetDnsNameAsync(IPAddress ip)
+    {
         try
         {
             var entry = await Dns.GetHostEntryAsync(ip).WaitAsync(Constants.ReverseDnsTimeout);
             var name = entry.HostName;
-            if (string.IsNullOrWhiteSpace(name) || name == fallback)
+            if (string.IsNullOrWhiteSpace(name) || name == ip.ToString())
             {
-                return fallback;
+                return null;
             }
 
             var dot = name.IndexOf('.');
@@ -153,7 +160,7 @@ public sealed class ArpScanService : IArpScanService
         }
         catch (Exception ex) when (ex is SocketException or TimeoutException or ArgumentException)
         {
-            return fallback;
+            return null;
         }
     }
 
