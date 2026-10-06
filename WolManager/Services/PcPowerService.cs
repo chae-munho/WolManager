@@ -47,7 +47,7 @@ public sealed class PcPowerService : IPcPowerService
             pc.Status = PcStatus.Waking;
             pc.WakeRequestedAt = DateTime.Now;
             pc.ShutdownRequestedAt = null;
-            _log.Write($"깨우기 신호를 보냈습니다: {pc.Name} (연결: {string.Join(", ", result.SentVia)})");
+            _log.Write($"깨우기 신호를 보냈습니다: {pc.Name} ({pc.Mac})");
             if (failures.Length > 0)
             {
                 _log.Write($"일부 연결로는 보내지 못했습니다: {failures}");

@@ -37,13 +37,14 @@ public sealed class PcDetailViewModel : ObservableObject
 
         _updateCommand = new RelayCommand(Update, () => Pc is not null);
         _deleteCommand = new RelayCommand(Delete, () => Pc is not null);
+        // 끄는 중에는 깨우기를, 깨우는 중에는 끄기를 막는다. 서로 반대 동작이 겹치지 않게 하기 위해서다.
         _wakeCommand = new AsyncRelayCommand(
             () => Pc is { } pc ? _power.WakeOneAsync(pc) : Task.CompletedTask,
-            () => Pc is not null,
+            () => Pc is { Status: not PcStatus.ShuttingDown },
             ex => _log.Write($"깨우기 중 오류가 발생했습니다. ({ex.Message})"));
         _shutdownCommand = new AsyncRelayCommand(
             () => Pc is { } pc ? _power.ShutdownAsync(pc) : Task.CompletedTask,
-            () => Pc is not null,
+            () => Pc is { Status: not PcStatus.Waking },
             ex => _log.Write($"끄기 중 오류가 발생했습니다. ({ex.Message})"));
     }
 
@@ -72,8 +73,7 @@ public sealed class PcDetailViewModel : ObservableObject
             OnPropertyChanged(nameof(HasPc));
             _updateCommand.RaiseCanExecuteChanged();
             _deleteCommand.RaiseCanExecuteChanged();
-            _wakeCommand.RaiseCanExecuteChanged();
-            _shutdownCommand.RaiseCanExecuteChanged();
+            RefreshPowerButtons();
         }
     }
 
@@ -143,7 +143,15 @@ public sealed class PcDetailViewModel : ObservableObject
         Show(null);
     }
 
+    // 상태가 바뀌면 깨우기/끄기 버튼의 사용 가능 여부를 다시 평가한다.
+    private void RefreshPowerButtons()
+    {
+        _wakeCommand.RaiseCanExecuteChanged();
+        _shutdownCommand.RaiseCanExecuteChanged();
+    }
+
     // 스캔이나 MAC 찾기로 PC 정보가 바뀌면, 사용자가 고치지 않은 입력칸만 새 값으로 바꾼다.
+    // 상태가 바뀌면 깨우기/끄기 버튼을 다시 맞춘다.
     private void OnPcPropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
         if (sender is not PcEntry pc)
@@ -153,6 +161,9 @@ public sealed class PcDetailViewModel : ObservableObject
 
         switch (e.PropertyName)
         {
+            case nameof(PcEntry.Status):
+                RefreshPowerButtons();
+                break;
             case nameof(PcEntry.Name) when Name == _loadedName:
                 Name = _loadedName = pc.Name;
                 break;
