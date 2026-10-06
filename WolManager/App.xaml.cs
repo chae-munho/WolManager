@@ -18,7 +18,8 @@ public partial class App : Application
         ILogService logService = new LogService(Dispatcher);
         IPcRepository pcRepository = new JsonPcRepository(
             logService,
-            Path.Combine(AppContext.BaseDirectory, Constants.PcFileName));
+            Path.Combine(AppContext.BaseDirectory, Constants.PcFileName),
+            Path.Combine(AppContext.BaseDirectory, Constants.DefaultPcFileName));
         IDialogService dialogService = new DialogService();
         INetworkInterfaceService networkService = new NetworkInterfaceService();
         IWakeOnLanService wakeOnLanService = new WakeOnLanService(networkService);

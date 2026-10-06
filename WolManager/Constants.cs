@@ -12,6 +12,9 @@ public static class Constants
     /// PC 목록 저장 파일 이름 (실행 파일 폴더)
     public const string PcFileName = "pcs.json";
 
+    /// 저장 파일이 없을 때 처음 불러오는 기본 목록 (저장소에 포함, 빌드 시 실행 파일 폴더로 복사)
+    public const string DefaultPcFileName = "pcs.default.json";
+
     /// 읽을 수 없는 저장 파일을 옮겨 두는 이름
     public const string BrokenPcFileName = "pcs.broken.json";
 

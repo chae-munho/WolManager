@@ -20,38 +20,49 @@ public sealed class JsonPcRepository : IPcRepository
 
     private readonly ILogService _log;
     private readonly string _filePath;
+    private readonly string _defaultFilePath;
     private readonly ObservableCollection<PcEntry> _items = new();
 
-    public JsonPcRepository(ILogService log, string filePath)
+    public JsonPcRepository(ILogService log, string filePath, string defaultFilePath)
     {
         _log = log;
         _filePath = filePath;
+        _defaultFilePath = defaultFilePath;
         Items = new ReadOnlyObservableCollection<PcEntry>(_items);
     }
 
     /// PC 목록.
     public ReadOnlyObservableCollection<PcEntry> Items { get; }
 
-    /// 저장 파일에서 목록을 불러온다. 파일이 없거나 깨져 있으면 빈 목록으로 시작한다.
+    /// 저장 파일에서 목록을 불러온다. 저장 파일이 없으면 기본 목록을, 둘 다 없거나 깨져 있으면 빈 목록으로 시작한다.
+    /// 기본 목록은 읽기만 하고, 처음 저장할 때 저장 파일이 새로 생긴다.
     public void Load()
     {
         _items.Clear();
 
-        if (!File.Exists(_filePath))
+        var usingDefault = !File.Exists(_filePath);
+        if (usingDefault && !File.Exists(_defaultFilePath))
         {
             _log.Write("저장된 PC 목록이 없어 빈 목록으로 시작합니다.");
             return;
         }
 
+        var path = usingDefault ? _defaultFilePath : _filePath;
         List<PcRecord>? records;
         try
         {
-            records = JsonSerializer.Deserialize<List<PcRecord>>(File.ReadAllText(_filePath), JsonOptions);
+            records = JsonSerializer.Deserialize<List<PcRecord>>(File.ReadAllText(path), JsonOptions);
         }
         catch (JsonException)
         {
             _log.Write("PC 목록 파일 내용이 올바르지 않아 빈 목록으로 시작합니다.");
-            BackupBrokenFile();
+
+            // 기본 목록은 저장소에 있는 원본이라 옮기지 않는다.
+            if (!usingDefault)
+            {
+                BackupBrokenFile();
+            }
+
             return;
         }
         catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
@@ -90,7 +101,9 @@ public sealed class JsonPcRepository : IPcRepository
             });
         }
 
-        _log.Write($"저장된 PC 목록을 불러왔습니다. ({_items.Count}대)");
+        _log.Write(usingDefault
+            ? $"기본 PC 목록을 불러왔습니다. ({_items.Count}대)"
+            : $"저장된 PC 목록을 불러왔습니다. ({_items.Count}대)");
     }
 
     /// 현재 목록을 저장 파일에 기록한다.
